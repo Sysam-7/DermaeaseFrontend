@@ -1,0 +1,133 @@
+/* Tailwind-first styling placeholder for Login page */
+@tailwind components;
+@tailwind utilities;
+
+/* ======================================
+   PAGE WRAPPER
+====================================== */
+.login-page-wrapper {
+  @apply min-h-screen w-full 
+         bg-gradient-to-br from-indigo-200 via-white to-blue-200
+         flex items-center justify-center p-4;
+}
+
+/* ======================================
+   MAIN CARD – Glass UI look
+====================================== */
+.login-card {
+  @apply w-full max-w-4xl 
+         rounded-2xl shadow-xl overflow-hidden
+         grid grid-cols-1 md:grid-cols-2 
+         bg-white/30 backdrop-blur-xl border border-white/40;
+}
+
+/* ======================================
+   LEFT PANE — Image Splash Area
+====================================== */
+.left-pane {
+  @apply hidden md:flex flex-col justify-end items-start relative;
+  @apply text-white;
+
+  /* Load your background image */
+  background-image: url("/Images/loginimage.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Add a modern dark gradient overlay */
+.left-pane::after {
+  content: "";
+  @apply absolute inset-0 bg-gradient-to-t from-black/60 to-black/10;
+}
+
+/* Control spacing for text inside left pane */
+.left-pane > * {
+  @apply relative z-10 p-12;
+}
+
+/* Typography inside the left pane */
+.left-pane h1 {
+  @apply text-4xl font-bold tracking-wide;
+}
+
+.left-pane p {
+  @apply text-lg opacity-90 leading-relaxed mt-4;
+}
+
+/* ======================================
+   RIGHT PANE — Login Form
+====================================== */
+.right-pane {
+  @apply flex flex-col justify-center p-10 space-y-6 bg-white/90;
+}
+
+.right-pane h2 {
+  @apply text-3xl font-semibold text-gray-800 mb-4;
+}
+
+.right-pane form {
+  @apply flex flex-col space-y-4;
+}
+
+/* ======================================
+   INPUT FIELDS
+====================================== */
+.right-pane input {
+  @apply w-full px-4 py-3 rounded-xl border border-gray-300 bg-white/70
+         focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+         outline-none transition duration-200;
+}
+
+/* ======================================
+   ERROR BOX
+====================================== */
+.form-error {
+  @apply bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm font-medium;
+}
+
+/* ======================================
+   LOGIN BUTTON
+====================================== */
+.right-pane button[type="submit"] {
+  @apply w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold 
+         hover:bg-indigo-700 transition duration-200
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* ======================================
+   DIVIDER
+====================================== */
+.divider {
+  @apply flex items-center gap-4 text-gray-500 font-medium my-4;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  @apply flex-grow h-px bg-gray-300;
+}
+
+/* ======================================
+   GOOGLE FALLBACK BUTTON
+====================================== */
+.google-fallback {
+  @apply w-full flex items-center justify-center gap-3 py-3 rounded-xl 
+         border border-gray-300 bg-white hover:bg-gray-100 
+         transition duration-200 font-medium text-gray-700;
+}
+
+.google-fallback img {
+  @apply w-5 h-5;
+}
+
+/* ======================================
+   BOTTOM TEXT + LINK
+====================================== */
+.right-pane p {
+  @apply text-gray-600 text-sm text-center;
+}
+
+.right-pane p a {
+  @apply text-indigo-600 font-semibold hover:underline;
+}
+

@@ -1,0 +1,10 @@
+/* Tailwind-first styling. Extend via component/utilities here if needed. */
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Add page-specific component classes here if ever required */
+}
+
+
+
