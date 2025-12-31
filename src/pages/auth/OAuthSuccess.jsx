@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { verifyToken } from "../../services/auth.js";
 
 export default function OAuthSuccess() {
   const navigate = useNavigate();
@@ -22,18 +21,27 @@ export default function OAuthSuccess() {
           localStorage.setItem("token", urlToken);
           localStorage.setItem("role", role);
           setDebug({ step: "redirect (url token)", info: { role } });
-          return navigate(role === "doctor" ? "/doctor" : "/patient", { replace: true });
+          // Verify token and get user info before redirecting
+          try {
+            const verifyResult = await verifyToken(urlToken);
+            if (verifyResult?.data?.user) {
+              const user = verifyResult.data.user;
+              if (user.name) localStorage.setItem("name", user.name);
+              const finalRole = user.role || role;
+              localStorage.setItem("role", finalRole);
+              return navigate(finalRole === "doctor" ? "/doctor/dashboard" : "/patient", { replace: true });
+            }
+          } catch (err) {
+            console.error("Token verification failed:", err);
+          }
+          return navigate(role === "doctor" ? "/doctor/dashboard" : "/patient", { replace: true });
         }
 
         // 2) No token in URL -> try verifying cookie session with backend
         setDebug({ step: "verifying cookie token" });
-        const res = await fetch(`${API.replace(/\/$/, "")}/auth/verify-token`, {
-          credentials: "include",
-        });
+        const body = await verifyToken(localStorage.getItem('token') || '');
 
-        if (res.ok) {
-          // backend confirmed cookie -> get user data if available
-          const body = await res.json().catch(() => null);
+        if (body?.data?.user) {
           const user = body?.data?.user;
           const role = urlRole || user?.role || "patient";
 
@@ -41,7 +49,7 @@ export default function OAuthSuccess() {
           localStorage.setItem("role", role);
 
           setDebug({ step: "redirect (valid cookie)", info: { role } });
-          return navigate(role === "doctor" ? "/doctor" : "/patient", { replace: true });
+          return navigate(role === "doctor" ? "/doctor/dashboard" : "/patient", { replace: true });
         }
 
         // 3) Verification returned non-OK (e.g. no valid cookie). STILL redirect to patient/doctor.
@@ -52,7 +60,7 @@ export default function OAuthSuccess() {
           step: "redirect (verification failed, fallback)",
           info: { verificationOk: false, role: fallbackRole },
         });
-        return navigate(fallbackRole === "doctor" ? "/doctor" : "/patient", { replace: true });
+        return navigate(fallbackRole === "doctor" ? "/doctor/dashboard" : "/patient", { replace: true });
 
       } catch (err) {
         // Only on unexpected exceptions do we send to /login

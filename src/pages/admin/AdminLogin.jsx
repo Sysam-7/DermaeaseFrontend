@@ -4,7 +4,7 @@ import Page from '../../components/ui/Page.jsx';
 import Card from '../../components/ui/Card.jsx';
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
-import { loginAdminAccount } from '../../api/admin.js';
+import { loginAdminAccount } from '../../services/admin.js';
 
 export default function AdminLogin() {
   const navigate = useNavigate();

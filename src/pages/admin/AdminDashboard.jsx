@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Page from '../../components/ui/Page.jsx';
 import Card from '../../components/ui/Card.jsx';
 import Button from '../../components/ui/Button.jsx';
-import { fetchDoctorsForAdmin, deleteDoctorAsAdmin } from '../../api/admin.js';
+import { fetchDoctorsForAdmin, deleteDoctorAsAdmin } from '../../services/admin.js';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();

@@ -1,4 +1,5 @@
 import React from 'react';
+import { changePassword } from '../../services/auth.js';
 
 export default function Settings() {
   return (
@@ -17,9 +18,12 @@ function ChangePassword(){
   const [msg, setMsg] = React.useState('');
   async function submit(e){
     e.preventDefault();
-    const res = await fetch('/api/auth/change-password', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ currentPassword, newPassword }) });
-    const d = await res.json();
-    setMsg(d.message || (d.success ? 'Changed' : 'Failed'));
+    try {
+      const d = await changePassword({ oldPassword: currentPassword, newPassword, token });
+      setMsg(d.message || (d.success ? 'Changed' : 'Failed'));
+    } catch (err) {
+      setMsg(err.message || 'Failed');
+    }
   }
   return (
     <div className="mt-6 border-t pt-4">

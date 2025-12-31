@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { getDoctorById } from '../../services/aboutDoctors.js';
 
 export default function DoctorProfile() {
   const { id } = useParams();
@@ -13,12 +12,8 @@ export default function DoctorProfile() {
     (async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${API.replace(/\/$/,'')}/doctors/${id}`, { credentials: 'include' });
-        if (!res.ok) {
-          throw new Error(`Not found: ${res.status}`);
-        }
-        const body = await res.json();
-        setDoctor(body.data);
+        const body = await getDoctorById(id);
+        setDoctor(body.data || body.doctor || body);
       } catch (err) {
         setError(String(err));
       } finally {
@@ -42,7 +37,10 @@ export default function DoctorProfile() {
           <p className="bg-yellow-200 w-20 h-6">{doctor.price}</p>
           <p className="text-sm text-gray-500 mt-2">{doctor.location}</p>
           <div className="mt-3">
-            <button onClick={() => window.location.href = `/patient/booking?doctor=${doctor._id}`} className="inline-block bg-blue-600 text-white px-4 py-2 rounded">
+            <button
+              onClick={() => { window.location.href = `/patient/booking?doctorId=${doctor._id}`; }}
+              className="inline-block bg-blue-600 text-white px-4 py-2 rounded"
+            >
               Book Consultation
             </button>
           </div>
@@ -53,6 +51,31 @@ export default function DoctorProfile() {
         <h2 className="text-xl font-semibold">About</h2>
         <p className="text-gray-700 mt-2">{doctor.bio || 'No bio provided yet.'}</p>
       </div>
+
+      {(doctor.workingHoursStart || doctor.workingDays) && (
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+          <h3 className="text-lg font-semibold mb-2">Availability</h3>
+          {doctor.workingHoursStart && doctor.workingHoursEnd && (
+            <p className="text-gray-700 mb-2">
+              <span className="font-medium">Working Hours:</span> {doctor.workingHoursStart} - {doctor.workingHoursEnd}
+            </p>
+          )}
+          {doctor.workingDays && doctor.workingDays.length > 0 && (
+            <div>
+              <span className="font-medium">Working Days:</span>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day, index) => (
+                  doctor.workingDays.includes(index) && (
+                    <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                      {day}
+                    </span>
+                  )
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {doctor.rating && (
         <div className="mt-4">

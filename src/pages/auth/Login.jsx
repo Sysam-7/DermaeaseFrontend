@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../../api/authService.js';
+import { login, googleLogin } from '../../services/auth.js';
 import '../Login.page.css';
 
 const API = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
@@ -60,15 +60,7 @@ export default function Login() {
       if (!credentialResponse) throw new Error('No credential received from Google');
       const payload = credentialResponse.credential ? { credential: credentialResponse.credential } : credentialResponse;
 
-      const r = await fetch(`${API}/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(payload),
-      });
-
-      const body = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(body.message || 'Google sign-in failed');
+      const body = await googleLogin(payload);
 
       if (body.token) {
         localStorage.setItem('token', body.token);
@@ -77,7 +69,7 @@ export default function Login() {
       }
 
       const role = body.role || localStorage.getItem('role') || 'patient';
-      navigate(role === 'doctor' ? '/doctor' : '/patient');
+      navigate(role === 'doctor' ? '/doctor/dashboard' : '/patient');
 
     } catch (err) {
       console.error('Google sign-in error', err);
@@ -102,7 +94,7 @@ export default function Login() {
       }
 
       const role = res.role || localStorage.getItem('role') || 'patient';
-      navigate(role === 'doctor' ? '/doctor' : '/patient');
+      navigate(role === 'doctor' ? '/doctor/dashboard' : '/patient');
 
     } catch (err) {
       setError(err?.message || 'Login failed');
@@ -112,11 +104,13 @@ export default function Login() {
   }
 
   function openServerGoogle() {
-    window.open(
-      `${API}/auth/google`,
-      '_blank',
-      'noopener,noreferrer,width=600,height=700'
-    );
+    // Use the correct API URL with /api prefix
+    const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+    const apiURL = apiBase.endsWith('/api') ? apiBase : `${apiBase}/api`;
+    const googleAuthURL = `${apiURL}/auth/google`;
+    
+    console.log('Opening Google OAuth:', googleAuthURL);
+    window.location.href = googleAuthURL; // Use window.location instead of window.open for OAuth
   }
 
   return (
@@ -156,13 +150,21 @@ export default function Login() {
               onChange={e => setEmail(e.target.value)}
             />
 
-            <input
-              className="input-field"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-            />
+            <div className="relative">
+              <input
+                className="input-field"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+              />
+              <Link 
+                to="/forgot-password" 
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-gray-600 hover:text-indigo-600 hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
 
             {error && <div className="form-error">{error}</div>}
 

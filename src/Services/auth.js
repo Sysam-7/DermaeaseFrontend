@@ -1,4 +1,6 @@
-const API = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+// Ensure API URL includes /api prefix
+const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+const API = baseURL.endsWith('/api') ? baseURL : `${baseURL}/api`;
 
 async function handleResponse(res) {
   const text = await res.text();
@@ -67,5 +69,14 @@ export async function verifyToken(token) {
     method: 'GET',
     headers,
     credentials: 'include'
+  }).then(handleResponse);
+}
+
+export async function googleLogin(payload) {
+  return fetch(`${API}/auth/google`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(payload),
   }).then(handleResponse);
 }

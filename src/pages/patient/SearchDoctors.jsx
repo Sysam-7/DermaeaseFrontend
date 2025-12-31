@@ -4,6 +4,7 @@ import Page from '../../components/ui/Page.jsx';
 import Card from '../../components/ui/Card.jsx';
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
+import { listDoctorsForUsers } from '../../services/users.js';
 
 export default function SearchDoctors() {
   const [q, setQ] = useState({ specialty: '', location: '', rating: '' });
@@ -11,7 +12,7 @@ export default function SearchDoctors() {
   function load() {
     const params = new URLSearchParams();
     Object.entries(q).forEach(([k, v]) => v && params.append(k, v));
-    fetch('/api/users/doctors?' + params.toString()).then(r=>r.json()).then(d=>d.success && setDoctors(d.data));
+    listDoctorsForUsers(params.toString()).then((d)=> d.success === false ? setDoctors([]) : setDoctors(d.data || [])).catch(()=>setDoctors([]));
   }
   useEffect(() => { load(); }, []);
   return (

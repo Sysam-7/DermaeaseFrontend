@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { register } from '../../api/auth.js';
+import { register } from '../../services/auth.js';
 
 function strongPassword(p) {
   return p.length >= 8 && /[A-Z]/.test(p) && /[a-z]/.test(p) && /\d/.test(p);
@@ -28,7 +28,8 @@ export default function Register() {
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role || role);
       }
-      navigate(role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard');
+      const finalRole = res.role || role;
+      navigate(finalRole === 'doctor' ? '/doctor/dashboard' : '/patient');
     } catch (err) {
       setMessage(err?.message || 'Registration failed');
     } finally { setLoading(false); }
@@ -83,7 +84,7 @@ export default function Register() {
               <button type="submit" disabled={loading} className="flex-1 py-3 px-5 rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-300 text-white font-semibold shadow">
                 {loading ? 'Creating…' : 'Create account'}
               </button>
-              <Link to="/auth/login" className="text-sm text-gray-500 hover:underline">Already have an account?</Link>
+              <Link to="/login" className="text-sm text-gray-500 hover:underline">Already have an account?</Link>
             </div>
           </form>
 
@@ -92,9 +93,14 @@ export default function Register() {
             <div className="mt-3">
               {/* Google OAuth button (logic untouched) */}
               <button type="button" className="w-full px-4 py-2 rounded-xl border border-gray-200 flex items-center justify-center gap-3 bg-white hover:shadow-md">
-                <img src="/Images/google-icon.svg" alt="Google" className="w-5 h-5" />
+                <img src="/Images/google-icon.png" alt="Google" className="w-5 h-5" />
                 <span className="text-sm text-gray-700">Continue with Google</span>
               </button>
+            </div>
+            <div className="mt-4">
+              <Link to="/forgot-password" className="text-sm text-gray-600 hover:text-indigo-600 hover:underline">
+                Forgot your password?
+              </Link>
             </div>
           </div>
 

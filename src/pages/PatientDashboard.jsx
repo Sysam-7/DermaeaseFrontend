@@ -19,148 +19,176 @@ export default function PatientDashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        
+    <div className="min-h-screen bg-[#f5f5fb] px-4 py-6 md:px-8">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="mb-10">
-          <h1 className="text-4xl font-bold text-gray-900">Welcome back! 👋</h1>
-          <p className="text-gray-600 mt-2">Manage your health and appointments all in one place</p>
-        </div>
+        <header className="space-y-2">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 flex items-center gap-2">
+            Welcome back! <span className="text-2xl">👋</span>
+          </h1>
+          <p className="text-sm md:text-base text-slate-600">
+            Manage your health and appointments all in one place.
+          </p>
+        </header>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500 hover:shadow-lg transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">Total Appointments</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{stats.appointments}</p>
-              </div>
-              <div className="text-4xl">📅</div>
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+          <div className="bg-white rounded-3xl shadow-sm border border-slate-100 px-6 py-5 flex items-center justify-between">
+            <div>
+              <p className="text-[11px] font-medium text-slate-500 uppercase tracking-[0.18em]">Total Appointments</p>
+              <p className="mt-3 text-2xl md:text-3xl font-bold text-slate-900">{stats.appointments}</p>
+            </div>
+            <div className="h-11 w-11 rounded-2xl bg-blue-50 flex items-center justify-center text-xl text-blue-600">
+              📅
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500 hover:shadow-lg transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">Upcoming</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{stats.upcoming}</p>
-              </div>
-              <div className="text-4xl">⏰</div>
+          <div className="bg-white rounded-3xl shadow-sm border border-slate-100 px-6 py-5 flex items-center justify-between">
+            <div>
+              <p className="text-[11px] font-medium text-slate-500 uppercase tracking-[0.18em]">Upcoming</p>
+              <p className="mt-3 text-2xl md:text-3xl font-bold text-slate-900">{stats.upcoming}</p>
+            </div>
+            <div className="h-11 w-11 rounded-2xl bg-pink-50 flex items-center justify-center text-xl text-pink-500">
+              ⏰
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500 hover:shadow-lg transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">Doctors Consulted</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{stats.doctors}</p>
-              </div>
-              <div className="text-4xl">👨‍⚕️</div>
+          <div className="bg-white rounded-3xl shadow-sm border border-slate-100 px-6 py-5 flex items-center justify-between">
+            <div>
+              <p className="text-[11px] font-medium text-slate-500 uppercase tracking-[0.18em]">Doctors Consulted</p>
+              <p className="mt-3 text-2xl md:text-3xl font-bold text-slate-900">{stats.doctors}</p>
+            </div>
+            <div className="h-11 w-11 rounded-2xl bg-amber-50 flex items-center justify-center text-xl text-amber-500">
+              👨‍⚕️
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 items-start">
           {/* Left: Quick Actions */}
-          <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Book Appointment Card */}
-              <Link to="/patient/find-doctors">
-                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl hover:scale-105 transition duration-300 cursor-pointer h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="text-5xl">🔍</div>
-                    <h3 className="text-lg font-semibold text-gray-900">Find Doctor</h3>
+          <div className="lg:col-span-2 space-y-4">
+            <h2 className="text-lg md:text-xl font-semibold text-slate-900 flex items-center gap-2">
+              <span className="text-purple-500 text-lg">⚡</span>
+              Quick Actions
+            </h2>
+
+            {/* Each card is its own box with clear gaps, like the reference image */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10 md:gap-y-14">
+              {/* Find Doctor */}
+              <Link to="/patient/find-doctors" className="group">
+                <div className="h-full rounded-3xl bg-[#fcfbff] border border-[#ece9ff] shadow-sm px-6 py-6 flex flex-col gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  <div className="h-11 w-11 rounded-2xl bg-[#eef2ff] flex items-center justify-center text-xl text-[#4c46e5] mb-1">
+                    🔍
                   </div>
-                  <p className="text-gray-600 text-sm">Browse and book with available doctors</p>
+                  <div className="space-y-1">
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900">Find Doctor</h3>
+                    <p className="text-xs md:text-sm text-slate-600">
+                      Browse and book with available specialists.
+                    </p>
+                  </div>
                 </div>
               </Link>
 
-              {/* My Appointments Card */}
-              <Link to="/patient/appointments">
-                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl hover:scale-105 transition duration-300 cursor-pointer h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="text-5xl">📋</div>
-                    <h3 className="text-lg font-semibold text-gray-900">Appointments</h3>
+              {/* Appointments */}
+              <Link to="/patient/appointments" className="group">
+                <div className="h-full rounded-3xl bg-[#fcfbff] border border-[#ece9ff] shadow-sm px-6 py-6 flex flex-col gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  <div className="h-11 w-11 rounded-2xl bg-[#e4ebff] flex items-center justify-center text-xl text-[#3b5bdb] mb-1">
+                    📋
                   </div>
-                  <p className="text-gray-600 text-sm">View and manage your bookings</p>
+                  <div className="space-y-1">
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900">Appointments</h3>
+                    <p className="text-xs md:text-sm text-slate-600">
+                      View history and manage bookings.
+                    </p>
+                  </div>
                 </div>
               </Link>
 
-              {/* Prescriptions Card */}
-              <Link to="/prescriptions">
-                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl hover:scale-105 transition duration-300 cursor-pointer h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="text-5xl">💊</div>
-                    <h3 className="text-lg font-semibold text-gray-900">Prescriptions</h3>
+              {/* Prescriptions */}
+              <Link to="/prescriptions" className="group">
+                <div className="h-full rounded-3xl bg-[#fcfbff] border border-[#fde3ea] shadow-sm px-6 py-6 flex flex-col gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  <div className="h-11 w-11 rounded-2xl bg-[#ffe9ec] flex items-center justify-center text-xl text-[#e64563] mb-1">
+                    💊
                   </div>
-                  <p className="text-gray-600 text-sm">Download and view your prescriptions</p>
+                  <div className="space-y-1">
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900">Prescriptions</h3>
+                    <p className="text-xs md:text-sm text-slate-600">
+                      Download and view your scripts.
+                    </p>
+                  </div>
                 </div>
               </Link>
 
-              {/* Chat Card */}
-              <Link to="/patient/chat">
-                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl hover:scale-105 transition duration-300 cursor-pointer h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="text-5xl">💬</div>
-                    <h3 className="text-lg font-semibold text-gray-900">Chat</h3>
+              {/* Chat */}
+              <Link to="/patient/chat" className="group">
+                <div className="h-full rounded-3xl bg-[#fcfbff] border border-[#ece9ff] shadow-sm px-6 py-6 flex flex-col gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  <div className="h-11 w-11 rounded-2xl bg-[#eef2ff] flex items-center justify-center text-xl text-[#6f6af8] mb-1">
+                    💬
                   </div>
-                  <p className="text-gray-600 text-sm">Message your doctor directly</p>
+                  <div className="space-y-1">
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900">Chat</h3>
+                    <p className="text-xs md:text-sm text-slate-600">
+                      Message your doctor directly.
+                    </p>
+                  </div>
                 </div>
               </Link>
 
-              {/* Reviews Card */}
-              <Link to="/reviews">
-                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl hover:scale-105 transition duration-300 cursor-pointer h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="text-5xl">⭐</div>
-                    <h3 className="text-lg font-semibold text-gray-900">Reviews</h3>
+              {/* Reviews */}
+              <Link to="/reviews" className="group">
+                <div className="h-full rounded-3xl bg-[#fcfbff] border border-[#ffe8c7] shadow-sm px-6 py-6 flex flex-col gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  <div className="h-11 w-11 rounded-2xl bg-[#fff4e6] flex items-center justify-center text-xl text-[#f08c00] mb-1">
+                    ⭐
                   </div>
-                  <p className="text-gray-600 text-sm">Leave feedback for doctors</p>
+                  <div className="space-y-1">
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900">Reviews</h3>
+                    <p className="text-xs md:text-sm text-slate-600">
+                      Leave feedback for your visits.
+                    </p>
+                  </div>
                 </div>
               </Link>
 
-              {/* Profile Card */}
-              <Link to="/patient/profile">
-                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl hover:scale-105 transition duration-300 cursor-pointer h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="text-5xl">👤</div>
-                    <h3 className="text-lg font-semibold text-gray-900">My Profile</h3>
+              {/* My Profile */}
+              <Link to="/patient/profile" className="group">
+                <div className="h-full rounded-3xl bg-[#fcfbff] border border-[#dff8f0] shadow-sm px-6 py-6 flex flex-col gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  <div className="h-11 w-11 rounded-2xl bg-[#e6fcf5] flex items-center justify-center text-xl text-[#12b886] mb-1">
+                    👤
                   </div>
-                  <p className="text-gray-600 text-sm">Manage your account settings</p>
+                  <div className="space-y-1">
+                    <h3 className="text-sm md:text-base font-semibold text-slate-900">My Profile</h3>
+                    <p className="text-xs md:text-sm text-slate-600">
+                      Manage your account settings.
+                    </p>
+                  </div>
                 </div>
               </Link>
             </div>
           </div>
 
-          {/* Right: Image & Info */}
-          <div className="flex flex-col justify-center items-center">
-            <div className="bg-white rounded-xl shadow-lg p-8 w-full">
+          {/* Right: Support / Need Help (image preserved) */}
+          <aside className="space-y-4">
+            <h2 className="text-lg md:text-xl font-semibold text-slate-900">Support</h2>
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-5 md:p-6 flex flex-col h-full">
               <img
                 src="/Images/Patient.png"
                 alt="Patient illustration"
-                className="w-full h-auto max-h-80 object-contain mb-6"
+                className="w-full h-auto max-h-64 object-contain rounded-2xl mb-4"
               />
-              <div className="text-center">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Need Help?</h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  Contact our support team if you have any questions or concerns.
+              <div className="text-center space-y-2">
+                <h3 className="text-base md:text-lg font-semibold text-slate-900">Need Help?</h3>
+                <p className="text-xs md:text-sm text-slate-600">
+                  Have questions about your prescription or skincare routine? Our support team is here to guide you.
                 </p>
-                <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition w-full">
+                <button className="mt-2 inline-flex items-center justify-center w-full rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-violet-800 transition-colors">
                   Contact Support
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-
+          </aside>
+        </section>
       </div>
     </div>
   );
 }
-
-

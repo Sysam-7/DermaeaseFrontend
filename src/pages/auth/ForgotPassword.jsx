@@ -1,11 +1,15 @@
-import { useState } from 'react';
-import { forgotPassword } from '../../api/auth.js';
+import { useState, useEffect } from 'react';
+import { forgotPassword } from '../../services/auth.js';
 import { Link } from 'react-router-dom';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = 'Forgot Password • DermaEase';
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -21,20 +25,68 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-indigo-50 flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Reset your password</h2>
-        <p className="text-sm text-gray-500 mb-4">Enter your account email and we'll send a reset link.</p>
+    <div className="
+      relative min-h-screen w-full
+      bg-gradient-to-br from-blue-50/60 via-white/40 to-blue-100/60
+      backdrop-blur-md flex items-center justify-center p-4 overflow-hidden
+    ">
+      {/* --- YELLOW MODERN SPLASH BLOBS (3 sizes, right side) --- */}
+      <div className="absolute right-10 top-10 w-72 h-72 bg-yellow-300 opacity-40 rounded-full blur-3xl" />
+      <div className="absolute right-32 top-56 w-56 h-56 bg-yellow-300 opacity-30 rounded-full blur-2xl" />
+      <div className="absolute right-48 top-96 w-40 h-40 bg-yellow-300 opacity-20 rounded-full blur-xl" />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input value={email} onChange={e=>setEmail(e.target.value)} type="email" placeholder="you@example.com" className="w-full px-4 py-2 border rounded-lg" />
-          <div className="flex items-center justify-between">
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-green-600 text-white rounded-lg">{loading ? 'Sending…' : 'Send reset link'}</button>
-            <Link to="/auth/login" className="text-sm text-gray-600 hover:underline">Back to login</Link>
+      {/* --- C-SHAPED WAVE --- */}
+      <div className="
+        absolute right-0 top-0 h-full w-40 
+        bg-gradient-to-b from-yellow-200 via-yellow-300 to-yellow-200
+        opacity-40 rounded-l-[100px]
+      " />
+
+      <div className="login-card">
+        <div className="left-pane">
+          <h1>DermaEase</h1>
+          <p>Reset your password to regain access to your account.</p>
+        </div>
+
+        <div className="right-pane">
+          <h2>Forgot Password</h2>
+          <p className="text-sm text-gray-500 mb-6">Enter your email address and we'll send you a link to reset your password.</p>
+
+          <form onSubmit={handleSubmit} className="login-form">
+            <input
+              className="input-field"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+
+            {status && (
+              <div className={`text-sm p-3 rounded-lg ${
+                status.includes('sent') || status.includes('success')
+                  ? 'bg-green-50 text-green-700 border border-green-200'
+                  : 'bg-red-50 text-red-700 border border-red-200'
+              }`}>
+                {status}
+              </div>
+            )}
+
+            <button type="submit" disabled={loading} className="login-btn">
+              {loading ? 'Sending…' : 'Send Reset Link'}
+            </button>
+          </form>
+
+          <div className="mt-4 text-center">
+            <Link to="/login" className="text-sm text-gray-600 hover:text-indigo-600 hover:underline">
+              ← Back to login
+            </Link>
           </div>
-        </form>
 
-        {status && <div className="mt-4 text-sm text-gray-700">{status}</div>}
+          <p className="register-text mt-4">
+            Don't have an account? <Link to="/register">Create Your Account →</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

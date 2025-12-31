@@ -1,6 +1,7 @@
 import './MyProfile.page.css';
 import { useEffect, useState } from 'react';
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { verifyToken } from '../../services/auth.js';
+import { updateUsername } from '../../services/users.js';
 
 export default function MyProfile() {
   const [user, setUser] = useState(null);
@@ -11,13 +12,9 @@ export default function MyProfile() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${API.replace(/\/$/,'')}/auth/verify-token`, {
-          credentials: 'include',
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || ''}` },
-        });
-        if (res.ok) {
-          const body = await res.json();
-          const u = body.data.user;
+        const body = await verifyToken(localStorage.getItem('token') || '');
+        const u = body?.data?.user;
+        if (u) {
           setUser(u);
           setUsername(u?.username || '');
         }
@@ -30,21 +27,12 @@ export default function MyProfile() {
     if (!username) { setMsg('Username required'); return; }
     setSaving(true); setMsg('');
     try {
-      const res = await fetch(`${API.replace(/\/$/,'')}/users/username`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token') || ''}` },
-        body: JSON.stringify({ username }),
-      });
-      const body = await res.json();
-      if (res.ok) {
-        setUser(body.data);
-        setMsg('Username saved');
-        localStorage.setItem('username', username);
-      } else {
-        setMsg(body.message || 'Save failed');
-      }
+      const body = await updateUsername(username, localStorage.getItem('token') || '');
+      setUser(body.data || body.user || user);
+      setMsg(body.message || 'Username saved');
+      localStorage.setItem('username', username);
     } catch (err) {
-      setMsg('Server error');
+      setMsg(err.message || 'Server error');
     } finally { setSaving(false); }
   }
 

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { fetchReviewsByDoctor, deleteReview } from '../../services/admin.js';
 
 export default function ManageReviews() {
   const [doctorId, setDoctorId] = useState('');
   const [items, setItems] = useState([]);
   const token = localStorage.getItem('token');
-  async function load(){ if(!doctorId) return; const r= await fetch(`/api/reviews/${doctorId}`); const d= await r.json(); if(d.success) setItems(d.data); }
-  async function remove(id){ await fetch(`/api/reviews/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }); load(); }
+  async function load(){ if(!doctorId) return; try { const d = await fetchReviewsByDoctor(doctorId, token); if(d.success === false) return; setItems(d.data || d.reviews || []); } catch (e) { setItems([]); } }
+  async function remove(id){ await deleteReview(id, token); load(); }
   return (
     <div className="space-y-3">
       <h2 className="text-xl font-bold">Manage Reviews</h2>

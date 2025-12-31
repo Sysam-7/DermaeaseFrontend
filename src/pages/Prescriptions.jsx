@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { fetchPrescriptions, createPrescription as createPrescriptionRequest } from '../services/users.js';
 
 export default function Prescriptions() {
   const [items, setItems] = useState([]);
@@ -8,8 +9,9 @@ export default function Prescriptions() {
   const role = localStorage.getItem('role');
 
   useEffect(() => {
-    fetch('/api/prescriptions', { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json()).then(d => d.success && setItems(d.data));
+    fetchPrescriptions(token)
+      .then(d => d.success === false ? setItems([]) : setItems(d.data || []))
+      .catch(()=>setItems([]));
   }, []);
 
   function updateMed(i, key, val) {
@@ -17,11 +19,7 @@ export default function Prescriptions() {
   }
 
   async function createPrescription() {
-    const res = await fetch('/api/prescriptions', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ patientId, content: { medicines } })
-    });
-    const d = await res.json();
+    const d = await createPrescriptionRequest({ patientId, content: { medicines } }, token);
     if (d.success) setItems((prev) => [d.data, ...prev]);
   }
 

@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import Page from '../components/ui/Page.jsx';
 import Card from '../components/ui/Card.jsx';
+import { fetchSmsLogs } from '../services/admin.js';
 
 export default function AdminDashboard() {
   const [sms, setSms] = useState([]);
   const token = localStorage.getItem('token');
   useEffect(() => {
-    fetch('/api/notifications/sms/logs', { headers: { Authorization: `Bearer ${token}` } })
-      .then((r) => r.json())
-      .then((d) => d.success && setSms(d.data || []));
+    fetchSmsLogs(token)
+      .then((d) => d.success === false ? setSms([]) : setSms(d.data || []))
+      .catch(() => setSms([]));
   }, []);
   return (
     <Page title="Admin dashboard" subtitle="System overview and logs">

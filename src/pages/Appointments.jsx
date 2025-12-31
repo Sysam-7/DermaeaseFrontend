@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { getMyAppointments, bookAppointment, updateAppointmentStatus } from '../services/appointments.js';
+import { listDoctorsForUsers } from '../services/users.js';
 
 export default function Appointments() {
   const [items, setItems] = useState([]);
@@ -10,27 +12,18 @@ export default function Appointments() {
   const role = localStorage.getItem('role');
 
   useEffect(() => {
-    fetch('/api/appointments', { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json()).then(d => d.success && setItems(d.data));
-    fetch('/api/users/doctors').then(r=>r.json()).then(d=>d.success && setDoctors(d.data));
+    getMyAppointments(token).then((d)=> d.success === false ? setItems([]) : setItems(d.data || d)).catch(()=>setItems([]));
+    listDoctorsForUsers().then(d=> d.success === false ? setDoctors([]) : setDoctors(d.data || [])).catch(()=>setDoctors([]));
   }, []);
 
   async function createAppt() {
-    const res = await fetch('/api/appointments', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ doctorId, start, end })
-    });
-    const d = await res.json();
+    const d = await bookAppointment({ doctorId, start, end }, token);
     if (d.success) setItems((prev) => [...prev, d.data]);
     else alert(d.message);
   }
 
   async function updateStatus(id, status) {
-    const res = await fetch(`/api/appointments/${id}/status`, {
-      method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ status })
-    });
-    const d = await res.json();
+    const d = await updateAppointmentStatus(id, status, token);
     if (d.success) setItems((prev) => prev.map((i) => (i._id === id ? d.data : i)));
   }
 

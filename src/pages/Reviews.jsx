@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { fetchReviews, submitReview, deleteReviewById } from '../services/users.js';
 
 export default function Reviews() {
   const [doctorId, setDoctorId] = useState('');
@@ -10,23 +11,17 @@ export default function Reviews() {
 
   async function load() {
     if (!doctorId) return;
-    const res = await fetch(`/api/reviews/${doctorId}`);
-    const d = await res.json();
-    if (d.success) setItems(d.data);
+    const d = await fetchReviews(doctorId, token);
+    if (d.success !== false) setItems(d.data || d.reviews || []);
   }
 
   async function save() {
-    const res = await fetch('/api/reviews', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ doctorId, rating: Number(rating), text })
-    });
-    const d = await res.json();
+    const d = await submitReview({ doctorId, rating: Number(rating), text }, token);
     if (d.success) load();
   }
 
   async function remove(id) {
-    const res = await fetch(`/api/reviews/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
-    const d = await res.json();
+    const d = await deleteReviewById(id, token);
     if (d.success) load();
   }
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { fetchNotifications } from '../services/users.js';
 
 export default function NotificationBell() {
   const [count, setCount] = useState(0);
@@ -7,9 +8,8 @@ export default function NotificationBell() {
     let mounted = true;
     async function poll() {
       try {
-        const res = await fetch('/api/notifications', { headers: { Authorization: `Bearer ${token}` } });
-        const d = await res.json();
-        if (mounted && d.success) setCount((d.data || []).filter((n) => !n.read).length);
+        const d = await fetchNotifications(token);
+        if (mounted && d) setCount((d.data || d.notifications || []).filter((n) => !n.read).length);
       } catch {}
     }
     poll();

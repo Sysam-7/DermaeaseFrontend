@@ -1,67 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { useParams } from 'react-router-dom';
+import { getDoctorById } from '../../services/aboutDoctors.js';
 
 export default function DoctorProfile() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [doctor, setDoctor] = useState(null);
-  const [booked, setBooked] = useState(false);
-  const [message, setMessage] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${API.replace(/\/$/,'')}/doctors/${id}`);
-        if (res.ok) {
-          const body = await res.json();
-          setDoctor(body.data);
-        }
+        const body = await getDoctorById(id);
+        setDoctor(body.data || body.doctor || body);
       } catch (err) {}
     })();
   }, [id]);
-
-  async function handleBook() {
-    setMessage('');
-    try {
-      const verify = await fetch(`${API.replace(/\/$/,'')}/auth/verify-token`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || ''}` },
-        credentials: 'include'
-      });
-      if (!verify.ok) { setMessage('Not authenticated'); return; }
-      const vb = await verify.json();
-      const patient = vb.data.user;
-      const payload = {
-        doctorId: id,
-        patientUsername: patient.username || patient.name || localStorage.getItem('name') || 'patient',
-      };
-
-      const res = await fetch(`${API.replace(/\/$/,'')}/appointments/book`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
-        },
-        credentials: 'include',
-        body: JSON.stringify(payload),
-      });
-
-      const body = await res.json();
-      if (res.ok && body.success) {
-        setBooked(true);
-        navigate('/patient/booking-confirmation', {
-          state: {
-            doctor: { name: doctor?.name, specialty: doctor?.specialty, location: doctor?.location, profilePic: doctor?.profilePic },
-            message: 'Appointment booked. Please wait for doctor’s approval.'
-          }
-        });
-      } else {
-        setMessage(body.message || 'Booking failed');
-      }
-    } catch (err) {
-      setMessage('Server error');
-    }
-  }
 
   if (!doctor) return <div className="p-6">Loading...</div>;
 
@@ -76,11 +28,45 @@ export default function DoctorProfile() {
         </div>
       </div>
 
+      {doctor.bio && (
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold mb-2">About</h2>
+          <p className="text-gray-700">{doctor.bio}</p>
+        </div>
+      )}
+
+      {(doctor.workingHoursStart || doctor.workingDays) && (
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+          <h3 className="text-lg font-semibold mb-2">Availability</h3>
+          {doctor.workingHoursStart && doctor.workingHoursEnd && (
+            <p className="text-gray-700 mb-2">
+              <span className="font-medium">Working Hours:</span> {doctor.workingHoursStart} - {doctor.workingHoursEnd}
+            </p>
+          )}
+          {doctor.workingDays && doctor.workingDays.length > 0 && (
+            <div>
+              <span className="font-medium">Working Days:</span>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day, index) => (
+                  doctor.workingDays.includes(index) && (
+                    <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                      {day}
+                    </span>
+                  )
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="mt-6">
-        <button onClick={handleBook} disabled={booked} className={`px-4 py-2 rounded ${booked ? 'bg-gray-300' : 'bg-blue-600 text-white'}`}>
-          {booked ? 'Booked' : 'Book Consultation'}
+        <button
+          onClick={() => { window.location.href = `/patient/booking?doctorId=${doctor._id}`; }}
+          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+        >
+          Book Consultation
         </button>
-        {message && <div className="mt-3 text-sm text-green-700">{message}</div>}
       </div>
     </div>
   );

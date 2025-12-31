@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
+import { fetchChatHistory, sendChatMessage } from '../services/users.js';
 
 export default function Chat() {
   const [withId, setWithId] = useState('');
@@ -16,17 +17,13 @@ export default function Chat() {
   }, []);
 
   async function loadHistory() {
-    const res = await fetch(`/api/chat/history?withUserId=${withId}`, { headers: { Authorization: `Bearer ${token}` } });
-    const d = await res.json();
-    if (d.success) setHistory(d.data);
+    const d = await fetchChatHistory(withId, token);
+    if (d.success !== false) setHistory(d.data || []);
   }
 
   async function send() {
     if (!withId || !text) return;
-    await fetch('/api/chat/send', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ to: withId, message: text })
-    });
+    await sendChatMessage({ to: withId, message: text }, token);
     socket?.emit('chat:send', { to: withId, message: text });
     setText('');
   }

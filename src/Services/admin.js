@@ -1,4 +1,6 @@
-const API = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+// Ensure API URL includes /api prefix
+const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+const API = baseURL.endsWith('/api') ? baseURL : `${baseURL}/api`;
 
 async function request(path, { method = 'GET', body, headers = {}, token, withAuth } = {}) {
   const finalHeaders = { ...headers };
@@ -35,5 +37,20 @@ export const fetchDoctorsForAdmin = (token) =>
   request('/doctors', { method: 'GET', token, withAuth: Boolean(token) });
 export const deleteDoctorAsAdmin = (doctorId, token) =>
   request(`/doctors/${doctorId}`, { method: 'DELETE', token, withAuth: true });
+
+export const fetchSmsLogs = (token) =>
+  request('/notifications/sms/logs', { method: 'GET', token, withAuth: true });
+
+export const fetchUserDoctors = (token) =>
+  request('/users/doctors', { method: 'GET', token, withAuth: Boolean(token) });
+
+export const approveDoctor = (userId, token) =>
+  request(`/users/${userId}/approve`, { method: 'POST', token, withAuth: true });
+
+export const fetchReviewsByDoctor = (doctorId, token) =>
+  request(`/reviews/${doctorId}`, { method: 'GET', token, withAuth: Boolean(token) });
+
+export const deleteReview = (reviewId, token) =>
+  request(`/reviews/${reviewId}`, { method: 'DELETE', token, withAuth: true });
 
 

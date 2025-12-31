@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import AuthInput from '../components/AuthInput.jsx';
 import AuthButton from '../components/AuthButton.jsx';
-import { changePassword } from '../api/authService.js';
-import { useToast } from '../components/ToastContext.jsx';
+import { changePassword } from '../services/auth.js';
+import { useToast } from '../contexts/ToastContext.jsx';
 
 export default function ChangePasswordPage() {
   const [oldPass, setOldPass] = useState('');

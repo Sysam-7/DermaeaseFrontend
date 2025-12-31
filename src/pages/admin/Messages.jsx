@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
+import { fetchSmsLogs } from '../../services/admin.js';
 
 export default function Messages() {
   const [sms, setSms] = useState([]);
   const token = localStorage.getItem('token');
   useEffect(() => {
-    fetch('/api/notifications/sms/logs', { headers: { Authorization: `Bearer ${token}` } })
-      .then((r) => r.json()).then((d) => d.success && setSms(d.data || []));
+    fetchSmsLogs(token).then((d) => d.success === false ? setSms([]) : setSms(d.data || [])).catch(()=>setSms([]));
   }, []);
   return (
     <div className="space-y-3">

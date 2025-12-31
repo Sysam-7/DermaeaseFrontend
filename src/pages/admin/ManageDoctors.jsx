@@ -1,12 +1,20 @@
 import { useEffect, useState } from 'react';
+import { fetchUserDoctors, approveDoctor } from '../../services/admin.js';
 
 export default function ManageDoctors() {
   const [doctors, setDoctors] = useState([]);
   const token = localStorage.getItem('token');
-  function load(){ fetch('/api/users/doctors').then(r=>r.json()).then(d=>d.success && setDoctors(d.data)); }
+  async function load() {
+    try {
+      const res = await fetchUserDoctors(token);
+      setDoctors(res.data || res.doctors || []);
+    } catch (err) {
+      setDoctors([]);
+    }
+  }
   useEffect(() => { load(); }, []);
   async function approve(id){
-    await fetch(`/api/users/${id}/approve`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+    await approveDoctor(id, token);
     load();
   }
   return (
