@@ -161,9 +161,9 @@ export default function PatientChat() {
   }, [token]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 text-slate-900">
-      <div className="mx-auto max-w-7xl px-4 py-10">
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+    <div className="chat-shell text-slate-900">
+      <div className="mx-auto max-w-7xl px-4 py-10 lg:py-12 space-y-6">
+        <header className="chat-hero flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between shadow-sm">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">Patient workspace</p>
             <h1 className="mt-1 text-3xl font-bold leading-tight text-slate-900">Chat with your doctors</h1>
@@ -171,7 +171,7 @@ export default function PatientChat() {
           </div>
           <Link
             to="/patient/find-doctors"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-indigo-400 hover:text-indigo-600 hover:shadow-md"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-md transition hover:border-indigo-400 hover:text-indigo-600 hover:shadow-lg"
           >
             ← Find doctors
           </Link>
@@ -180,11 +180,14 @@ export default function PatientChat() {
         <div className="grid gap-6 lg:grid-cols-4">
           {/* Conversations List */}
           <div className="lg:col-span-1">
-            <div className="rounded-2xl border border-slate-200 bg-white/80 shadow-lg overflow-hidden">
-              <div className="border-b border-slate-100 px-4 py-3 bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400">
-                <h2 className="text-sm font-semibold text-white">Your doctors</h2>
+            <div className="chat-surface shadow-xl overflow-hidden">
+              <div className="border-b border-slate-100 px-4 py-4 bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-sm font-semibold text-white">Your doctors</h2>
+                  <span className="chat-header-pill">{conversations.length} total</span>
+                </div>
               </div>
-              <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
+              <div className="chat-scroll max-h-[calc(100vh-300px)] overflow-y-auto">
                 {loading && conversations.length === 0 ? (
                   <div className="p-4 text-center text-sm text-slate-500">Loading...</div>
                 ) : conversations.length === 0 ? (
@@ -194,13 +197,13 @@ export default function PatientChat() {
                     <button
                       key={conv.userId}
                       onClick={() => setSelectedDoctor(conv)}
-                      className={`w-full text-left p-4 border-b border-slate-100 transition hover:bg-slate-50 ${
-                        selectedDoctor?.userId === conv.userId ? 'bg-indigo-50 border-indigo-200' : ''
+                      className={`w-full text-left px-4 py-3 border-b border-slate-100 transition-all hover:bg-slate-50 ${
+                        selectedDoctor?.userId === conv.userId ? 'bg-indigo-50/70 border-indigo-200 shadow-inner' : ''
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div className="relative shrink-0">
-                          <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold">
+                          <div className="w-12 h-12 rounded-full bg-indigo-50 ring-2 ring-indigo-100 flex items-center justify-center text-indigo-600 font-semibold shadow-sm">
                             {conv.profilePic ? (
                               <img src={`/Images/doctors/${conv.profilePic}`} alt={conv.name} className="w-12 h-12 rounded-full object-cover" />
                             ) : (
@@ -233,12 +236,12 @@ export default function PatientChat() {
           {/* Chat Area */}
           <div className="lg:col-span-3">
             {selectedDoctor ? (
-              <div className="rounded-2xl border border-slate-200 bg-white/80 shadow-lg overflow-hidden flex flex-col h-[calc(100vh-200px)]">
+              <div className="chat-surface shadow-2xl overflow-hidden flex flex-col h-[calc(100vh-220px)]">
                 <div className="border-b border-slate-100 px-6 py-4 bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold">
+                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold ring-2 ring-white/40 shadow">
                       {selectedDoctor.profilePic ? (
-                        <img src={`/Images/doctors/${selectedDoctor.profilePic}`} alt={selectedDoctor.name} className="w-10 h-10 rounded-full object-cover" />
+                        <img src={`/Images/doctors/${selectedDoctor.profilePic}`} alt={selectedDoctor.name} className="w-12 h-12 rounded-full object-cover" />
                       ) : (
                         selectedDoctor.name.charAt(0).toUpperCase()
                       )}
@@ -250,7 +253,7 @@ export default function PatientChat() {
                   </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50">
+                <div className="chat-scroll flex-1 overflow-y-auto p-6 lg:p-8 space-y-4 bg-slate-50/70 chat-pane">
                   {loading && messages.length === 0 ? (
                     <div className="text-center text-slate-500">Loading messages...</div>
                   ) : messages.length === 0 ? (
@@ -262,17 +265,13 @@ export default function PatientChat() {
                       const isOwn = msg.senderId.toString() === currentUserId;
                       return (
                         <div key={idx} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                          <div className={`max-w-[70%] rounded-2xl px-4 py-2 shadow-sm ${
-                            isOwn
-                              ? 'bg-indigo-600 text-white'
-                              : 'bg-white text-slate-900 border border-slate-200'
-                          }`}>
-                            <div className="text-sm whitespace-pre-wrap break-words">{msg.message}</div>
-                            <div className={`text-xs mt-1 ${
-                              isOwn ? 'text-indigo-100' : 'text-slate-500'
-                            }`}>
+                          <div
+                            className={`chat-bubble ${isOwn ? 'chat-bubble-own' : 'chat-bubble-other'} max-w-[72%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap break-words`}
+                          >
+                            <div className="mb-1">{msg.message}</div>
+                            <span className="chat-meta">
                               {formatMessageTime(msg.timestamp)}
-                            </div>
+                            </span>
                           </div>
                         </div>
                       );
@@ -281,21 +280,21 @@ export default function PatientChat() {
                   <div ref={messagesEndRef} />
                 </div>
 
-                <div className="border-t border-slate-200 p-4 bg-white">
-                  <div className="flex gap-2">
+                <div className="border-t border-slate-200/70 px-4 py-4 bg-white/90">
+                  <div className="chat-input flex items-center gap-3 px-3 py-2">
                     <input
                       type="text"
                       value={messageText}
                       onChange={(e) => setMessageText(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                       placeholder="Type your message..."
-                      className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                      className="flex-1 bg-transparent px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 outline-none"
                       disabled={sending}
                     />
                     <button
                       onClick={handleSend}
                       disabled={sending || !messageText.trim()}
-                      className="rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                      className="rounded-xl bg-gradient-to-r from-indigo-600 to-sky-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                     >
                       {sending ? 'Sending...' : 'Send'}
                     </button>
@@ -303,7 +302,7 @@ export default function PatientChat() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-2xl border border-slate-200 bg-white/80 shadow-lg p-12 text-center">
+              <div className="chat-surface shadow-xl p-12 text-center">
                 <div className="text-6xl mb-4">💬</div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-2">Select a doctor to start chatting</h3>
                 <p className="text-sm text-slate-600">Choose a doctor from the list to begin your conversation.</p>
