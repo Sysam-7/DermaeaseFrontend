@@ -23,6 +23,7 @@ import { checkAdminExists } from "./services/admin.js";
 import Booking from "./pages/patient/Booking.jsx";
 import PatientChat from "./pages/patient/PatientChat.jsx";
 import DoctorChats from "./pages/doctor/DoctorChats.jsx";
+import MyAppointments from "./pages/patient/MyAppointments.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 import ResetPassword from "./pages/auth/ResetPassword.jsx";
 
@@ -197,6 +198,14 @@ export default function App() {
             element={
               <Protected roles={["patient", "admin"]}>
                 <PatientChat />
+              </Protected>
+            }
+          />
+          <Route
+            path="/patient/appointments"
+            element={
+              <Protected roles={["patient", "admin"]}>
+                <MyAppointments />
               </Protected>
             }
           />

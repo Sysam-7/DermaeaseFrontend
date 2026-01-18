@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import NotificationBell from '../components/NotificationBell';
 import './PatientDashboard.page.css';
 
 export default function PatientDashboard() {
@@ -23,12 +24,19 @@ export default function PatientDashboard() {
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <header className="space-y-2">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 flex items-center gap-2">
-            Welcome back! <span className="text-2xl">👋</span>
-          </h1>
-          <p className="text-sm md:text-base text-slate-600">
-            Manage your health and appointments all in one place.
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 flex items-center gap-2">
+                Welcome back! <span className="text-2xl">👋</span>
+              </h1>
+              <p className="text-sm md:text-base text-slate-600">
+                Manage your health and appointments all in one place.
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <NotificationBell />
+            </div>
+          </div>
         </header>
 
         {/* Stats Cards */}
