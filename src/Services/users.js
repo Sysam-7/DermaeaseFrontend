@@ -60,6 +60,12 @@ export const updateCurrentUser = (payload, token) =>
 export const fetchNotifications = (token) =>
   request('/notifications', { method: 'GET', token });
 
+export const markNotificationAsRead = (notificationId, token) =>
+  request(`/notifications/${notificationId}/read`, { method: 'PATCH', token });
+
+export const markAllNotificationsAsRead = (token) =>
+  request('/notifications/read-all', { method: 'PATCH', token });
+
 export const fetchReviews = (doctorId, token) =>
   request(`/reviews/${doctorId}`, { method: 'GET', token });
 

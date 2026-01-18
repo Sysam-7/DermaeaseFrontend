@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import NotificationBell from "../components/NotificationBell";
 
 export default function DoctorDashboard() {
   return (
@@ -80,6 +81,7 @@ export default function DoctorDashboard() {
           </div>
 
           <div className="flex items-center gap-4">
+            <NotificationBell />
             <div className="text-right">
               <p className="font-semibold text-gray-900">Dr. Smith</p>
               <p className="text-sm text-gray-500">Dermatologist</p>

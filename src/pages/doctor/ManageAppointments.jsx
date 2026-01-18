@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getMyAppointments, updateAppointmentStatus } from "../../services/appointments.js";
+import NotificationBell from "../../components/NotificationBell";
 
 export default function ManageAppointments() {
   const [appointments, setAppointments] = useState([]);
@@ -145,12 +146,15 @@ export default function ManageAppointments() {
               View and manage all consultations booked by your patients.
             </p>
           </div>
-          <button
-            onClick={loadAppointments}
-            className="px-5 py-2.5 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
-          >
-            Refresh
-          </button>
+          <div className="flex items-center gap-4">
+            <NotificationBell />
+            <button
+              onClick={loadAppointments}
+              className="px-5 py-2.5 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
+            >
+              Refresh
+            </button>
+          </div>
         </div>
 
         {error && (
