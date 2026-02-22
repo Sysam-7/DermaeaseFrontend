@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
-import { getDoctorConversations, fetchChatHistory, sendChatMessage, fetchCurrentUser } from '../../services/users.js';
+import { getDoctorConversations, fetchChatHistory, sendChatMessage, fetchCurrentUser, fetchPrescriptions, sendPrescriptionToPatient } from '../../services/users.js';
 import { Link } from 'react-router-dom';
+import Toast from '../../components/Toast';
 
 export default function DoctorChats() {
   const [conversations, setConversations] = useState([]);
@@ -12,6 +13,10 @@ export default function DoctorChats() {
   const [sending, setSending] = useState(false);
   const [socket, setSocket] = useState(null);
   const messagesEndRef = useRef(null);
+  const [prescriptions, setPrescriptions] = useState([]);
+  const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
+  const [sendingPrescription, setSendingPrescription] = useState(false);
+  const [toast, setToast] = useState(null);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -34,8 +39,68 @@ export default function DoctorChats() {
   useEffect(() => {
     if (selectedPatient) {
       loadMessages(selectedPatient.userId);
+      loadPrescriptions();
     }
   }, [selectedPatient]);
+
+  async function loadPrescriptions() {
+    try {
+      const result = await fetchPrescriptions(token);
+      if (result.success) {
+        // Filter prescriptions for the selected patient
+        const patientPrescriptions = (result.data || []).filter(
+          p => p.patientId?.toString() === selectedPatient?.userId || 
+               (typeof p.patientId === 'string' && p.patientId === selectedPatient?.userId)
+        );
+        setPrescriptions(patientPrescriptions);
+      }
+    } catch (err) {
+      console.error('Failed to load prescriptions:', err);
+      setPrescriptions([]);
+    }
+  }
+
+  async function handleSendPrescription(prescriptionId) {
+    if (!selectedPatient || sendingPrescription) return;
+
+    try {
+      setSendingPrescription(true);
+      const result = await sendPrescriptionToPatient(prescriptionId, token);
+      if (result.success) {
+        setToast({ 
+          message: 'Prescription sent to patient successfully! The patient has been notified.', 
+          type: 'success' 
+        });
+        setShowPrescriptionModal(false);
+        // Optionally send a chat message about the prescription
+        const prescription = prescriptions.find(p => p._id === prescriptionId);
+        if (prescription) {
+          const disease = prescription.content?.disease || 'prescription';
+          await sendChatMessage(
+            { 
+              to: selectedPatient.userId, 
+              message: `I've sent you a prescription for ${disease}. Please check your notifications.` 
+            }, 
+            token
+          );
+          loadMessages(selectedPatient.userId);
+        }
+      } else {
+        setToast({ 
+          message: result.message || 'Failed to send prescription. Please try again.', 
+          type: 'error' 
+        });
+      }
+    } catch (err) {
+      console.error('Failed to send prescription:', err);
+      setToast({ 
+        message: err.message || 'Failed to send prescription. Please check your connection and try again.', 
+        type: 'error' 
+      });
+    } finally {
+      setSendingPrescription(false);
+    }
+  }
 
   useEffect(() => {
     scrollToBottom();
@@ -283,6 +348,23 @@ export default function DoctorChats() {
                 </div>
 
                 <div className="border-t border-slate-200/70 px-4 py-4 bg-white/90">
+                  <div className="mb-2 flex items-center gap-2">
+                    <button
+                      onClick={() => setShowPrescriptionModal(true)}
+                      disabled={prescriptions.length === 0 || sendingPrescription}
+                      className="px-4 py-2 bg-yellow-500 text-white rounded-lg text-sm font-medium hover:bg-yellow-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      💊 Send Prescription {prescriptions.length > 0 && `(${prescriptions.length})`}
+                    </button>
+                    {prescriptions.length === 0 && (
+                      <Link
+                        to="/doctor/prescription-generator"
+                        className="text-xs text-indigo-600 hover:text-indigo-800 underline"
+                      >
+                        Create one first
+                      </Link>
+                    )}
+                  </div>
                   <div className="chat-input flex items-center gap-3 px-3 py-2">
                     <input
                       type="text"
@@ -313,6 +395,102 @@ export default function DoctorChats() {
           </div>
         </div>
       </div>
+
+      {/* Prescription Modal */}
+      {showPrescriptionModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowPrescriptionModal(false);
+            }
+          }}
+          style={{ pointerEvents: 'auto' }}
+        >
+          <div 
+            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden flex flex-col"
+            style={{ pointerEvents: 'auto' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-xl font-bold text-gray-900">Send Prescription to {selectedPatient?.name}</h3>
+              <button
+                onClick={() => setShowPrescriptionModal(false)}
+                className="text-gray-400 hover:text-gray-600 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6">
+              {prescriptions.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500 mb-4">No prescriptions found for this patient.</p>
+                  <Link
+                    to="/doctor/prescription-generator"
+                    className="text-indigo-600 hover:text-indigo-800 underline"
+                  >
+                    Create a prescription first
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {prescriptions.map((prescription) => (
+                    <div
+                      key={prescription._id}
+                      className="border border-gray-200 rounded-xl p-4 hover:border-indigo-300 transition"
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h4 className="font-semibold text-gray-900">
+                            {prescription.content?.disease || 'Skin Condition'}
+                          </h4>
+                          <p className="text-sm text-gray-500">
+                            {new Date(prescription.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => handleSendPrescription(prescription._id)}
+                          disabled={sendingPrescription}
+                          className="px-4 py-2 bg-yellow-500 text-white rounded-lg text-sm font-medium hover:bg-yellow-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {sendingPrescription ? 'Sending...' : 'Send'}
+                        </button>
+                      </div>
+                      <div className="text-sm text-gray-700">
+                        <p className="font-medium mb-2">Medicines:</p>
+                        <ul className="list-disc list-inside space-y-1 ml-2">
+                          {(prescription.content?.medicines || []).map((med, idx) => (
+                            <li key={idx}>
+                              {med.name} - {med.dosage}
+                              {med.frequency && ` (${med.frequency})`}
+                              {med.duration && ` for ${med.duration}`}
+                            </li>
+                          ))}
+                        </ul>
+                        {prescription.content?.notes && (
+                          <p className="mt-2 text-gray-600">
+                            <span className="font-medium">Notes:</span> {prescription.content.notes}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+          duration={5000}
+        />
+      )}
     </div>
   );
 }

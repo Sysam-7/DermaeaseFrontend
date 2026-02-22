@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import NotificationBell from "../components/NotificationBell";
 
 export default function DoctorDashboard() {
+  const [doctorName, setDoctorName] = useState("Dr. Smith");
+
+  useEffect(() => {
+    try {
+      const storedName = localStorage.getItem("name");
+      if (storedName) {
+        // If the stored name already starts with "Dr.", use as is; otherwise, prefix.
+        const displayName = storedName.trim().toLowerCase().startsWith("dr.")
+          ? storedName.trim()
+          : `Dr. ${storedName.trim()}`;
+        setDoctorName(displayName);
+      }
+    } catch (e) {
+      // Fallback silently to default if localStorage is unavailable
+      console.error("Failed to read doctor name from localStorage", e);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 flex">
       
@@ -46,6 +64,13 @@ export default function DoctorDashboard() {
             >
               Feedback
             </Link>
+
+            <Link
+              to="/doctor/prescription-generator"
+              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
+            >
+              Prescription Generator
+            </Link>
           </nav>
         </div>
 
@@ -73,7 +98,7 @@ export default function DoctorDashboard() {
         <div className="flex justify-between items-center mb-12">
           <div>
             <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
-              Good Morning, Dr. Smith
+              Good Morning, {doctorName}
             </h1>
             <p className="text-gray-600 text-lg">
               You have 2 new appointment requests and 3 unread messages.
@@ -99,7 +124,10 @@ export default function DoctorDashboard() {
         <div className="grid grid-cols-3 gap-8 mb-12">
           
           {/* Chats */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition cursor-pointer flex flex-col items-center">
+          <Link
+            to="/doctor/chats"
+            className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition cursor-pointer flex flex-col items-center"
+          >
             <img
               src="/Images/DoctorDashboard/Chat.png"
               className="w-full h-44 object-contain mb-4"
@@ -109,10 +137,13 @@ export default function DoctorDashboard() {
             <p className="text-gray-500 text-sm text-center">
               Chat with patients
             </p>
-          </div>
+          </Link>
 
           {/* Appointments */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition cursor-pointer flex flex-col items-center">
+          <Link
+            to="/doctor/manage-appointments"
+            className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition cursor-pointer flex flex-col items-center"
+          >
             <img
               src="/Images/DoctorDashboard/appointment.png"
               className="w-full h-44 object-contain mb-4"
@@ -124,10 +155,13 @@ export default function DoctorDashboard() {
             <p className="text-gray-500 text-sm text-center">
               Manage patient appointments
             </p>
-          </div>
+          </Link>
 
           {/* Ratings */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition cursor-pointer flex flex-col items-center">
+          <Link
+            to="/doctor/feedback"
+            className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition cursor-pointer flex flex-col items-center"
+          >
             <img
               src="/Images/DoctorDashboard/Rating.png"
               className="w-full h-44 object-contain mb-4"
@@ -139,7 +173,7 @@ export default function DoctorDashboard() {
             <p className="text-gray-500 text-sm text-center">
               View your ratings and feedback
             </p>
-          </div>
+          </Link>
         </div>
 
         {/* Upcoming Appointments */}

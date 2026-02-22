@@ -44,6 +44,11 @@ export default function NotificationBell() {
           socket.on('appointment-updated', () => {
             loadNotifications(); // Reload notifications when appointment status changes
           });
+          
+          // Listen for new prescriptions
+          socket.on('new-prescription', () => {
+            loadNotifications(); // Reload notifications when new prescription arrives
+          });
         }
       } catch (err) {
         console.error('Socket setup error:', err);
@@ -114,6 +119,11 @@ export default function NotificationBell() {
       } else if (userRole === 'patient') {
         navigate('/patient/chat');
       }
+    } else if (notification.type === 'prescription_sent') {
+      // Navigate to prescription view
+      if (userRole === 'patient' && notification.relatedData?.prescriptionId) {
+        navigate(`/patient/prescription/${notification.relatedData.prescriptionId}`);
+      }
     }
 
     setIsOpen(false);
@@ -150,6 +160,7 @@ export default function NotificationBell() {
     if (type === 'appointment_cancelled') return '❌';
     if (type === 'appointment_completed') return '✔️';
     if (type === 'chat_message') return '💬';
+    if (type === 'prescription_sent') return '💊';
     return '🔔';
   };
 

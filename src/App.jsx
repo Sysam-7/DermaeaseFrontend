@@ -26,6 +26,9 @@ import DoctorChats from "./pages/doctor/DoctorChats.jsx";
 import MyAppointments from "./pages/patient/MyAppointments.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 import ResetPassword from "./pages/auth/ResetPassword.jsx";
+import PrescriptionGenerator from "./pages/doctor/PrescriptionGenerator.jsx";
+import ViewPrescription from "./pages/patient/ViewPrescription.jsx";
+import DoctorFeedback from "./pages/doctor/DoctorFeedback.jsx";
 
 function Protected({ children, roles }) {
   const adminToken = localStorage.getItem("admin_token");
@@ -276,6 +279,30 @@ export default function App() {
             element={
               <Protected roles={["doctor", "admin"]}>
                 <DoctorChats />
+              </Protected>
+            }
+          />
+          <Route
+            path="/doctor/prescription-generator"
+            element={
+              <Protected roles={["doctor", "admin"]}>
+                <PrescriptionGenerator />
+              </Protected>
+            }
+          />
+          <Route
+            path="/doctor/feedback"
+            element={
+              <Protected roles={["doctor", "admin"]}>
+                <DoctorFeedback />
+              </Protected>
+            }
+          />
+          <Route
+            path="/patient/prescription/:prescriptionId"
+            element={
+              <Protected roles={["patient", "admin"]}>
+                <ViewPrescription />
               </Protected>
             }
           />
