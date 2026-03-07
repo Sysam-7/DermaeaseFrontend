@@ -115,6 +115,13 @@ export default function ManageAppointments() {
             >
               Feedback
             </a>
+
+            <a
+              href="/doctor/prescription-generator"
+              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
+            >
+              Prescription Generator
+            </a>
           </nav>
         </div>
 

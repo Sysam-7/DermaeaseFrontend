@@ -8,12 +8,21 @@ export default function DoctorCard({ doctor }) {
 
   async function handleBook(e) {
     e?.preventDefault();
+    e?.stopPropagation();
     if (loading) return;
     setLoading(true);
     // Redirect patient to the modern booking page where they can pick date & time.
     navigate(`/patient/booking?doctorId=${doctor._id}`);
     // We immediately stop the loading state because navigation will unmount this component.
     setLoading(false);
+  }
+
+  function handleCardClick(e) {
+    // Don't navigate if clicking on buttons
+    if (e.target.closest('button') || e.target.closest('a')) {
+      return;
+    }
+    navigate(`/doctors/${doctor._id}`);
   }
 
   // 4 fallback images (i will later add doctor4.jpg)
@@ -38,7 +47,10 @@ export default function DoctorCard({ doctor }) {
   const fallbackImage = fallbackImages[generateIndex()];
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-lg ring-1 ring-transparent transition hover:-translate-y-1 hover:shadow-2xl hover:ring-indigo-100">
+    <div 
+      onClick={handleCardClick}
+      className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-lg ring-1 ring-transparent transition hover:-translate-y-1 hover:shadow-2xl hover:ring-indigo-100 cursor-pointer"
+    >
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400" />
 
       <div className="flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:gap-6 sm:px-6 sm:py-5">

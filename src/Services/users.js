@@ -69,6 +69,9 @@ export const markAllNotificationsAsRead = (token) =>
 export const fetchReviews = (doctorId, token) =>
   request(`/reviews/${doctorId}`, { method: 'GET', token });
 
+export const fetchMyDoctorReviews = (token) =>
+  request('/reviews/me/doctor', { method: 'GET', token });
+
 export const submitReview = (payload, token) =>
   request('/reviews', { method: 'POST', body: payload, token });
 
@@ -92,4 +95,10 @@ export const fetchPrescriptions = (token) =>
 
 export const createPrescription = (payload, token) =>
   request('/prescriptions', { method: 'POST', body: payload, token });
+
+export const sendPrescriptionToPatient = (prescriptionId, token) =>
+  request('/prescriptions/send', { method: 'POST', body: { prescriptionId }, token });
+
+export const getAllPatients = (token, query = '') =>
+  request(`/users/patients${query ? `?q=${encodeURIComponent(query)}` : ''}`, { method: 'GET', token });
 

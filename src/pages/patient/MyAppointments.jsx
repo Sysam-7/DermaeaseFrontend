@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { getMyAppointments } from '../../services/appointments.js';
 import { verifyToken } from '../../services/auth.js';
+import FeedbackModal from '../../components/FeedbackModal.jsx';
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function MyAppointments() {
   const [appts, setAppts] = useState([]);
+  const [feedbackModal, setFeedbackModal] = useState({ isOpen: false, doctorId: null, doctorName: '' });
 
   useEffect(() => {
     let socket;
@@ -56,6 +58,29 @@ export default function MyAppointments() {
     }
   }
 
+  function isAppointmentPast(appointment) {
+    if (!appointment.date) return false;
+    const appointmentDate = new Date(appointment.date);
+    if (appointment.time) {
+      const [hours, minutes] = appointment.time.split(':');
+      appointmentDate.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+    }
+    return appointmentDate < new Date();
+  }
+
+  function canLeaveFeedback(appointment) {
+    return appointment.status === 'completed' || 
+           (appointment.status === 'confirmed' && isAppointmentPast(appointment));
+  }
+
+  function handleOpenFeedback(doctorId, doctorName) {
+    setFeedbackModal({ isOpen: true, doctorId, doctorName });
+  }
+
+  function handleCloseFeedback() {
+    setFeedbackModal({ isOpen: false, doctorId: null, doctorName: '' });
+  }
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">My Appointments</h1>
@@ -86,11 +111,31 @@ export default function MyAppointments() {
                     Booked on: {new Date(a.createdAt).toLocaleString()}
                   </div>
                 )}
+                {canLeaveFeedback(a) && a.doctorId?._id && (
+                  <div className="mt-3">
+                    <button
+                      onClick={() => handleOpenFeedback(a.doctorId._id, doctorName)}
+                      className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition text-sm font-medium"
+                    >
+                      Leave Feedback & Rating
+                    </button>
+                  </div>
+                )}
             </div>
             );
           })}
         </div>
       )}
+      <FeedbackModal
+        isOpen={feedbackModal.isOpen}
+        onClose={handleCloseFeedback}
+        doctorId={feedbackModal.doctorId}
+        doctorName={feedbackModal.doctorName}
+        onSuccess={() => {
+          // Optionally refresh appointments or show success message
+          console.log('Feedback submitted successfully');
+        }}
+      />
     </div>
   );
 }
