@@ -225,13 +225,13 @@ export default function DoctorChats() {
   }, [token]);
 
   return (
-    <div className="chat-shell text-slate-900">
+    <div className="chat-shell text-slate-900 dark:text-slate-100">
       <div className="mx-auto max-w-7xl px-4 py-10 lg:py-12 space-y-6">
         <header className="chat-hero flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between shadow-sm">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">Doctor workspace</p>
-            <h1 className="mt-1 text-3xl font-bold leading-tight text-slate-900">Patient messages</h1>
-            <p className="mt-1 text-sm text-slate-600">Reply to patient inquiries and provide support.</p>
+            <h1 className="mt-1 text-3xl font-bold leading-tight text-slate-900 dark:text-slate-100">Patient messages</h1>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Reply to patient inquiries and provide support.</p>
           </div>
           <Link
             to="/doctor/dashboard"
@@ -256,9 +256,9 @@ export default function DoctorChats() {
               </div>
               <div className="chat-scroll max-h-[calc(100vh-300px)] overflow-y-auto">
                 {loading && conversations.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-slate-500">Loading...</div>
+                  <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400">Loading...</div>
                 ) : conversations.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-slate-500">No patient messages yet.</div>
+                  <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400">No patient messages yet.</div>
                 ) : (
                   conversations.map((conv) => (
                     <button
@@ -279,15 +279,15 @@ export default function DoctorChats() {
                           </div>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-slate-900 truncate">{conv.name}</div>
-                          <div className="text-xs text-slate-500 truncate">{conv.email}</div>
+                          <div className="font-semibold text-slate-900 dark:text-slate-100 truncate">{conv.name}</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400 truncate">{conv.email}</div>
                           {conv.lastMessage && (
-                            <div className="text-xs text-slate-500 mt-1 truncate">
+                            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">
                               {conv.lastMessage.message}
                             </div>
                           )}
                           {conv.lastMessage && (
-                            <div className="text-xs text-slate-400 mt-1">
+                            <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                               {formatTimestamp(conv.lastMessage.timestamp)}
                             </div>
                           )}
@@ -320,11 +320,11 @@ export default function DoctorChats() {
                   </div>
                 </div>
 
-                <div className="chat-scroll flex-1 overflow-y-auto p-6 lg:p-8 space-y-4 bg-slate-50/70 chat-pane">
+                <div className="chat-scroll flex-1 overflow-y-auto p-6 lg:p-8 space-y-4 bg-slate-50/70 dark:bg-slate-900/60 chat-pane">
                   {loading && messages.length === 0 ? (
-                    <div className="text-center text-slate-500">Loading messages...</div>
+                    <div className="text-center text-slate-500 dark:text-slate-400">Loading messages...</div>
                   ) : messages.length === 0 ? (
-                    <div className="text-center text-slate-500 py-8">
+                    <div className="text-center text-slate-500 dark:text-slate-400 py-8">
                       <p className="text-sm">No messages yet. Start the conversation!</p>
                     </div>
                   ) : (
@@ -372,7 +372,7 @@ export default function DoctorChats() {
                       onChange={(e) => setMessageText(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                       placeholder="Type your reply..."
-                      className="flex-1 bg-transparent px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 outline-none"
+                      className="flex-1 bg-transparent px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none"
                       disabled={sending}
                     />
                     <button
@@ -388,8 +388,8 @@ export default function DoctorChats() {
             ) : (
               <div className="chat-surface shadow-xl p-12 text-center">
                 <div className="text-6xl mb-4">💬</div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">Select a patient to view messages</h3>
-                <p className="text-sm text-slate-600">Choose a patient from the list to see their messages and reply.</p>
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">Select a patient to view messages</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">Choose a patient from the list to see their messages and reply.</p>
               </div>
             )}
           </div>
@@ -408,15 +408,15 @@ export default function DoctorChats() {
           style={{ pointerEvents: 'auto' }}
         >
           <div 
-            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden flex flex-col"
+            className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden flex flex-col"
             style={{ pointerEvents: 'auto' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-xl font-bold text-gray-900">Send Prescription to {selectedPatient?.name}</h3>
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Send Prescription to {selectedPatient?.name}</h3>
               <button
                 onClick={() => setShowPrescriptionModal(false)}
-                className="text-gray-400 hover:text-gray-600 text-2xl"
+                className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 text-2xl"
               >
                 ×
               </button>
@@ -424,7 +424,7 @@ export default function DoctorChats() {
             <div className="flex-1 overflow-y-auto p-6">
               {prescriptions.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-gray-500 mb-4">No prescriptions found for this patient.</p>
+                  <p className="text-gray-500 dark:text-gray-400 mb-4">No prescriptions found for this patient.</p>
                   <Link
                     to="/doctor/prescription-generator"
                     className="text-indigo-600 hover:text-indigo-800 underline"
@@ -437,14 +437,14 @@ export default function DoctorChats() {
                   {prescriptions.map((prescription) => (
                     <div
                       key={prescription._id}
-                      className="border border-gray-200 rounded-xl p-4 hover:border-indigo-300 transition"
+                      className="border border-gray-200 dark:border-slate-700 rounded-xl p-4 hover:border-indigo-300 dark:hover:border-indigo-500 transition"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h4 className="font-semibold text-gray-900">
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">
                             {prescription.content?.disease || 'Skin Condition'}
                           </h4>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
                             {new Date(prescription.createdAt).toLocaleDateString()}
                           </p>
                         </div>
@@ -456,7 +456,7 @@ export default function DoctorChats() {
                           {sendingPrescription ? 'Sending...' : 'Send'}
                         </button>
                       </div>
-                      <div className="text-sm text-gray-700">
+                      <div className="text-sm text-gray-700 dark:text-gray-300">
                         <p className="font-medium mb-2">Medicines:</p>
                         <ul className="list-disc list-inside space-y-1 ml-2">
                           {(prescription.content?.medicines || []).map((med, idx) => (
@@ -468,7 +468,7 @@ export default function DoctorChats() {
                           ))}
                         </ul>
                         {prescription.content?.notes && (
-                          <p className="mt-2 text-gray-600">
+                          <p className="mt-2 text-gray-600 dark:text-gray-400">
                             <span className="font-medium">Notes:</span> {prescription.content.notes}
                           </p>
                         )}

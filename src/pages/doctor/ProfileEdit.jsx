@@ -115,11 +115,11 @@ export default function ProfileEdit() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 flex">
+    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
       {/* Sidebar - Same as DoctorDashboard */}
-      <aside className="w-64 bg-white shadow-lg border-r border-gray-200 p-6 flex flex-col justify-between min-h-screen">
+      <aside className="w-64 bg-white dark:bg-slate-900 shadow-lg border-r border-gray-200 dark:border-slate-700 p-6 flex flex-col justify-between min-h-screen">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-10">DermaEase</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-10">DermaEase</h2>
 
           <nav className="flex flex-col gap-4">
             <Link
@@ -180,75 +180,75 @@ export default function ProfileEdit() {
       <main className="flex-1 p-12 overflow-y-auto">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-2">My Profile</h1>
-            <p className="text-gray-600 text-lg">Manage your profile information and working hours</p>
+            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-2">My Profile</h1>
+            <p className="text-gray-600 dark:text-gray-300 text-lg">Manage your profile information and working hours</p>
           </div>
 
           {loading ? (
-            <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-              <div className="text-gray-600">Loading your profile...</div>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8 text-center">
+              <div className="text-gray-600 dark:text-gray-300">Loading your profile...</div>
             </div>
           ) : (
             <div className="space-y-6">
               {/* Profile Information Section */}
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Profile Information</h2>
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Profile Information</h2>
                 <form onSubmit={handleSave} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Name</label>
                       <input
                         type="text"
                         value={form.name}
                         onChange={e => setForm({ ...form, name: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         placeholder="Enter your name"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Email</label>
                       <input
                         type="email"
                         value={form.email}
                         onChange={e => setForm({ ...form, email: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         placeholder="Enter your email"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Specialty</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Specialty</label>
                       <input
                         type="text"
                         value={form.specialty}
                         onChange={e => setForm({ ...form, specialty: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         placeholder="e.g., Dermatology"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Location</label>
                       <input
                         type="text"
                         value={form.location}
                         onChange={e => setForm({ ...form, location: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         placeholder="Enter your location"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Bio</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Bio</label>
                     <textarea
                       value={form.bio}
                       onChange={e => setForm({ ...form, bio: e.target.value })}
                       rows={4}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                       placeholder="Tell patients about yourself..."
                     />
                   </div>
 
                   {message && message.text && (
-                    <div className={`p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+                    <div className={`p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-200 dark:border-green-800' : 'bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-200 dark:border-red-800'}`}>
                       {message.text}
                     </div>
                   )}
@@ -272,49 +272,49 @@ export default function ProfileEdit() {
               </div>
 
               {/* Working Hours & Days Section */}
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Working Hours & Days</h2>
-                <p className="text-gray-600 mb-6">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Working Hours & Days</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Set your working hours and days. Patients will only be able to book appointments during these times.
                 </p>
                 <form onSubmit={handleSaveWorkingHours} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Start Time</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Start Time</label>
                       <input
                         type="time"
                         value={workingHours.start}
                         onChange={(e) => setWorkingHours({ ...workingHours, start: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         step="900"
                         required
                       />
-                      <p className="text-xs text-gray-500 mt-1">e.g., 07:00</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">e.g., 07:00</p>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">End Time</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">End Time</label>
                       <input
                         type="time"
                         value={workingHours.end}
                         onChange={(e) => setWorkingHours({ ...workingHours, end: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         step="900"
                         required
                       />
-                      <p className="text-xs text-gray-500 mt-1">e.g., 16:00</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">e.g., 16:00</p>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">Working Days</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">Working Days</label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                       {dayNames.map((day) => (
                         <label
                           key={day.value}
                           className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition ${
                             workingDays.includes(day.value)
-                              ? 'border-indigo-500 bg-indigo-50'
-                              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                              ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/40 dark:border-indigo-400'
+                              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 dark:border-slate-700 dark:hover:border-slate-500 dark:hover:bg-slate-800'
                           }`}
                         >
                           <input
@@ -329,15 +329,15 @@ export default function ProfileEdit() {
                             }}
                             className="w-5 h-5 text-indigo-600 focus:ring-indigo-500 rounded"
                           />
-                          <span className="text-sm font-medium text-gray-700">{day.label}</span>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{day.label}</span>
                         </label>
                       ))}
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">Select the days you are available to see patients</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Select the days you are available to see patients</p>
                   </div>
 
                   {message && message.text && (
-                    <div className={`p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+                    <div className={`p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-200 dark:border-green-800' : 'bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-200 dark:border-red-800'}`}>
                       {message.text}
                     </div>
                   )}

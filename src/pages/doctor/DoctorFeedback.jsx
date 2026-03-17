@@ -47,11 +47,11 @@ export default function DoctorFeedback() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 flex">
+    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-lg border-r border-gray-200 p-6 flex flex-col justify-between min-h-screen">
+      <aside className="w-64 bg-white dark:bg-slate-900 shadow-lg border-r border-gray-200 dark:border-slate-700 p-6 flex flex-col justify-between min-h-screen">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-10">DermaEase</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-10">DermaEase</h2>
 
           <nav className="flex flex-col gap-4">
             <Link
@@ -120,10 +120,10 @@ export default function DoctorFeedback() {
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
           <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
+            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-2">
               Ratings & Feedback
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 dark:text-gray-300 text-lg">
               View patient reviews and ratings
             </p>
           </div>
@@ -131,10 +131,10 @@ export default function DoctorFeedback() {
           <div className="flex items-center gap-4">
             <NotificationBell />
             <div className="text-right">
-              <p className="font-semibold text-gray-900">
+              <p className="font-semibold text-gray-900 dark:text-gray-100">
                 {localStorage.getItem('name') || 'Dr. Smith'}
               </p>
-              <p className="text-sm text-gray-500">Dermatologist</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Dermatologist</p>
             </div>
 
             <img
@@ -146,19 +146,19 @@ export default function DoctorFeedback() {
         </div>
 
         {/* Summary Card */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-6 mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Overall Rating
               </h2>
               <div className="flex items-center gap-4">
-                <div className="text-5xl font-bold text-gray-900">
+                <div className="text-5xl font-bold text-gray-900 dark:text-gray-100">
                   {averageRating > 0 ? averageRating.toFixed(1) : '0.0'}
                 </div>
                 <div>
                   {renderStars(Math.round(averageRating))}
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                     Based on {totalReviews} {totalReviews === 1 ? 'review' : 'reviews'}
                   </p>
                 </div>
@@ -170,12 +170,12 @@ export default function DoctorFeedback() {
         {/* Reviews List */}
         {loading ? (
           <div className="text-center py-12">
-            <p className="text-gray-600">Loading reviews...</p>
+            <p className="text-gray-600 dark:text-gray-300">Loading reviews...</p>
           </div>
         ) : reviews.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-            <p className="text-gray-600 text-lg">No reviews yet.</p>
-            <p className="text-gray-500 text-sm mt-2">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-12 text-center">
+            <p className="text-gray-600 dark:text-gray-300 text-lg">No reviews yet.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
               Reviews from patients will appear here once they leave feedback.
             </p>
           </div>
@@ -184,12 +184,12 @@ export default function DoctorFeedback() {
             {reviews.map((review) => (
               <div
                 key={review._id}
-                className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition"
+                className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-6 hover:shadow-xl transition"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-lg text-gray-900">
+                      <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
                         {review.patientId?.name || 'Anonymous Patient'}
                       </h3>
                       <div className="flex items-center gap-1">
@@ -200,18 +200,18 @@ export default function DoctorFeedback() {
                       </div>
                     </div>
                     {review.patientId?.email && (
-                      <p className="text-sm text-gray-500 mb-2">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                         {review.patientId.email}
                       </p>
                     )}
                     {review.text && (
-                      <p className="text-gray-700 mt-3 leading-relaxed">
+                      <p className="text-gray-700 dark:text-gray-300 mt-3 leading-relaxed">
                         {review.text}
                       </p>
                     )}
                   </div>
                 </div>
-                <div className="text-xs text-gray-400 mt-4">
+                <div className="text-xs text-gray-400 dark:text-gray-500 mt-4">
                   {new Date(review.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
