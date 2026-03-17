@@ -80,3 +80,21 @@ export async function googleLogin(payload) {
     body: JSON.stringify(payload),
   }).then(handleResponse);
 }
+
+export async function verifyGoogleOTP(payload) {
+  return fetch(`${API}/auth/verify-google-otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(payload),
+  }).then(handleResponse);
+}
+
+export async function resendGoogleOTP(payload) {
+  return fetch(`${API}/auth/resend-google-otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(payload),
+  }).then(handleResponse);
+}

@@ -35,6 +35,16 @@ export default function Register() {
     } finally { setLoading(false); }
   }
 
+  function handleGoogleRegister() {
+    // Use the correct API URL with /api prefix
+    const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+    const apiURL = apiBase.endsWith('/api') ? apiBase : `${apiBase}/api`;
+    const googleAuthURL = `${apiURL}/auth/google?role=${role}`;
+    
+    console.log('Opening Google OAuth for registration:', googleAuthURL);
+    window.location.href = googleAuthURL; // Redirect to Google OAuth
+  }
+
   return (
     <div className="relative min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-50/60 via-white/40 to-blue-100/60 overflow-hidden">
 
@@ -91,10 +101,13 @@ export default function Register() {
           <div className="mt-6 text-center text-sm text-gray-500">
             <span>Or sign up with Google</span>
             <div className="mt-3">
-              {/* Google OAuth button (logic untouched) */}
-              <button type="button" className="w-full px-4 py-2 rounded-xl border border-gray-200 flex items-center justify-center gap-3 bg-white hover:shadow-md">
+              <button 
+                type="button" 
+                onClick={handleGoogleRegister}
+                className="w-full px-4 py-2 rounded-xl border border-gray-200 flex items-center justify-center gap-3 bg-white hover:shadow-md transition-shadow"
+              >
                 <img src="/Images/google-icon.png" alt="Google" className="w-5 h-5" />
-                <span className="text-sm text-gray-700">Continue with Google</span>
+                <span className="text-sm text-gray-700">Register with Google</span>
               </button>
             </div>
             <div className="mt-4">
