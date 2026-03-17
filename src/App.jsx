@@ -26,7 +26,12 @@ import DoctorChats from "./pages/doctor/DoctorChats.jsx";
 import MyAppointments from "./pages/patient/MyAppointments.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 import ResetPassword from "./pages/auth/ResetPassword.jsx";
+import VerifyOTP from "./pages/auth/VerifyOTP.jsx";
+import VerifyEmailSent from "./pages/auth/VerifyEmailSent.jsx";
+import VerifyEmail from "./pages/auth/VerifyEmail.jsx";
 import PrescriptionGenerator from "./pages/doctor/PrescriptionGenerator.jsx";
+import Prescriptions from "./pages/Prescriptions.jsx";
+import Reviews from "./pages/Reviews.jsx";
 import ViewPrescription from "./pages/patient/ViewPrescription.jsx";
 import DoctorFeedback from "./pages/doctor/DoctorFeedback.jsx";
 
@@ -185,6 +190,9 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verify-otp" element={<VerifyOTP />} />
+          <Route path="/verify-email-sent" element={<VerifyEmailSent />} />
+          <Route path="/auth/verify-email" element={<VerifyEmail />} />
           <Route path="/auth/forgot" element={<ResetPassword />} />
           <Route path="/auth/success" element={<OAuthSuccess />} />
           <Route path="/patient/booking-confirmation" element={<BookingConfirmation />} />
@@ -209,6 +217,22 @@ export default function App() {
             element={
               <Protected roles={["patient", "admin"]}>
                 <MyAppointments />
+              </Protected>
+            }
+          />
+          <Route
+            path="/prescriptions"
+            element={
+              <Protected roles={["patient", "admin"]}>
+                <Prescriptions />
+              </Protected>
+            }
+          />
+          <Route
+            path="/reviews"
+            element={
+              <Protected roles={["patient", "admin"]}>
+                <Reviews />
               </Protected>
             }
           />
