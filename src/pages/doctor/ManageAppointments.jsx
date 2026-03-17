@@ -81,11 +81,11 @@ export default function ManageAppointments() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 flex">
+    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
       {/* Sidebar (match DoctorDashboard styling) */}
-      <aside className="w-64 bg-white shadow-lg border-r border-gray-200 p-6 flex flex-col justify-between min-h-screen">
+      <aside className="w-64 bg-white dark:bg-slate-900 shadow-lg border-r border-gray-200 dark:border-slate-700 p-6 flex flex-col justify-between min-h-screen">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-10">DermaEase</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-10">DermaEase</h2>
 
           <nav className="flex flex-col gap-4">
             <a
@@ -146,10 +146,10 @@ export default function ManageAppointments() {
       <main className="flex-1 p-12">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
+            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-2">
               Manage Appointments
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 dark:text-gray-300 text-lg">
               View and manage all consultations booked by your patients.
             </p>
           </div>
@@ -165,25 +165,25 @@ export default function ManageAppointments() {
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg border border-red-200">
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg border border-red-200 dark:bg-red-900/40 dark:text-red-200 dark:border-red-800">
             {error}
           </div>
         )}
 
         {loading ? (
-          <div className="p-6 text-gray-600 bg-white rounded-2xl shadow">
+          <div className="p-6 text-gray-600 dark:text-gray-300 bg-white dark:bg-slate-900 rounded-2xl shadow">
             Loading upcoming appointments…
           </div>
         ) : appointments.length === 0 ? (
-          <div className="p-6 bg-white rounded-2xl shadow text-gray-600">
+          <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl shadow text-gray-600 dark:text-gray-300">
             No upcoming appointments found. Once patients book from the{" "}
             <span className="font-semibold">Find Doctors</span> page, they will
             appear here.
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow overflow-hidden">
             <table className="w-full text-left">
-              <thead className="bg-gray-100 text-gray-600 text-sm uppercase tracking-wide">
+              <thead className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wide">
                 <tr>
                   <th className="p-4">Patient</th>
                   <th className="p-4">Date &amp; Time</th>
@@ -191,7 +191,7 @@ export default function ManageAppointments() {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="text-gray-900 dark:text-gray-100">
                 {appointments.map((app) => {
                   const patientName =
                     app.patientId?.name || app.patientUsername || "Unknown Patient";
@@ -200,21 +200,21 @@ export default function ManageAppointments() {
                   return (
                     <tr
                       key={app._id}
-                      className="border-t hover:bg-gray-50 transition"
+                      className="border-t border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 transition"
                     >
                       <td className="p-4">
                         <div className="flex flex-col">
-                          <span className="font-semibold text-gray-900">
+                          <span className="font-semibold text-gray-900 dark:text-gray-100">
                             {patientName}
                           </span>
                           {patientEmail && (
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
                               {patientEmail}
                             </span>
                           )}
                         </div>
                       </td>
-                      <td className="p-4 text-sm text-gray-800">
+                      <td className="p-4 text-sm text-gray-800 dark:text-gray-200">
                         {formatDateTime(app)}
                       </td>
                       <td className="p-4">

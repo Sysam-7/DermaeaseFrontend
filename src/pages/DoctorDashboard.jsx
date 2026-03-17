@@ -89,12 +89,12 @@ export default function DoctorDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 flex">
+    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
       
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-lg border-r border-gray-200 p-6 flex flex-col justify-between min-h-screen">
+      <aside className="w-64 bg-white dark:bg-slate-900 shadow-lg border-r border-gray-200 dark:border-slate-700 p-6 flex flex-col justify-between min-h-screen">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-10">DermaEase</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-10">DermaEase</h2>
 
           <nav className="flex flex-col gap-4">
             <Link
@@ -164,10 +164,10 @@ export default function DoctorDashboard() {
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
           <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
+            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-2">
               Good Morning, {doctorName}
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 dark:text-gray-300 text-lg">
               Welcome back. Here is a quick overview of your schedule.
             </p>
           </div>
@@ -244,7 +244,7 @@ export default function DoctorDashboard() {
         </div>
 
         {/* Latest & Upcoming Appointments */}
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
           Latest &amp; Upcoming Appointments
         </h2>
 

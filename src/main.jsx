@@ -6,6 +6,18 @@ import App from './App.jsx';
 import ErrorBoundary from './ErrorBoundary.jsx';
 import './styles.css';
 
+// Initialize persisted theme before React mounts
+try {
+  const storedTheme = localStorage.getItem('doctor_theme');
+  if (storedTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+} catch (e) {
+  // ignore theme errors
+}
+
 const root = createRoot(document.getElementById('root'));
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 

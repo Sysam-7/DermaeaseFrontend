@@ -4,6 +4,11 @@
 
 body { background: #FFFFFF; color: #000000; }
 
+.dark body {
+  background: #020617;
+  color: #e5e7eb;
+}
+
 .chat-shell {
   background:
     radial-gradient(120% 120% at 15% 20%, rgba(99, 102, 241, 0.14), transparent 55%),
@@ -12,6 +17,13 @@ body { background: #FFFFFF; color: #000000; }
     #f8fafc;
   min-height: 100vh;
   padding-bottom: 32px;
+}
+
+.dark .chat-shell {
+  background: radial-gradient(120% 120% at 15% 20%, rgba(129, 140, 248, 0.22), transparent 55%),
+    radial-gradient(140% 140% at 85% 0%, rgba(56, 189, 248, 0.2), transparent 55%),
+    radial-gradient(100% 100% at 50% 100%, rgba(45, 212, 191, 0.18), transparent 60%),
+    #020617;
 }
 
 .chat-surface {
@@ -24,6 +36,12 @@ body { background: #FFFFFF; color: #000000; }
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
+.dark .chat-surface {
+  background: radial-gradient(circle at top left, #1e293b 0, #020617 42%);
+  border-color: rgba(148, 163, 184, 0.6);
+  box-shadow: 0 22px 70px rgba(15, 23, 42, 0.6);
+}
+
 .chat-surface:hover {
   transform: translateY(-2px);
   box-shadow: 0 28px 90px rgba(15, 23, 42, 0.1);
@@ -34,6 +52,11 @@ body { background: #FFFFFF; color: #000000; }
   border-radius: 22px;
   border: 1px solid rgba(129, 140, 248, 0.55);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 14px 42px rgba(37, 99, 235, 0.18);
+}
+
+.dark .chat-pane {
+  background: radial-gradient(145deg, #020617 0%, #0f172a 40%, #020617 100%);
+  border-color: rgba(148, 163, 184, 0.6);
 }
 
 .chat-scroll {
@@ -90,6 +113,11 @@ body { background: #FFFFFF; color: #000000; }
   background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
   border-radius: 18px;
+}
+
+.dark .chat-input {
+  border-color: #1e293b;
+  background: linear-gradient(180deg, #020617 0%, #020617 100%);
 }
 
 .chat-header-pill {

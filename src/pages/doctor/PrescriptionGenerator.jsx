@@ -161,11 +161,11 @@ export default function PrescriptionGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 flex">
+    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-lg border-r border-gray-200 p-6 flex flex-col justify-between min-h-screen">
+      <aside className="w-64 bg-white dark:bg-slate-900 shadow-lg border-r border-gray-200 dark:border-slate-700 p-6 flex flex-col justify-between min-h-screen">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-10">DermaEase</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-10">DermaEase</h2>
 
           <nav className="flex flex-col gap-4">
             <Link
@@ -234,10 +234,10 @@ export default function PrescriptionGenerator() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
+            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-2">
               Prescription Generator
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 dark:text-gray-300 text-lg">
               Create and manage prescriptions for your patients
             </p>
           </div>
@@ -252,11 +252,11 @@ export default function PrescriptionGenerator() {
         </div>
 
         {/* Prescription Form */}
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8">
           <div className="space-y-6">
             {/* Patient Selection */}
             <div className="relative" ref={patientSearchRef}>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 Select Patient *
               </label>
               <div className="relative">
@@ -273,7 +273,7 @@ export default function PrescriptionGenerator() {
                     if (patientSearch) setShowSuggestions(true);
                   }}
                   placeholder="Type patient name to search..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                   disabled={loading}
                 />
                 {selectedPatientId && (
@@ -351,7 +351,7 @@ export default function PrescriptionGenerator() {
               )}
 
               {patients.length === 0 && !loading && (
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                   No patients found in the system.
                 </p>
               )}
@@ -359,7 +359,7 @@ export default function PrescriptionGenerator() {
 
             {/* Disease/Condition */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 Disease/Condition *
               </label>
               <input
@@ -368,7 +368,7 @@ export default function PrescriptionGenerator() {
                 onChange={(e) => setDisease(e.target.value)}
                 list="diseases"
                 placeholder="Enter skin disease or condition"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
               />
               <datalist id="diseases">
                 {commonSkinDiseases.map((d) => (
@@ -380,7 +380,7 @@ export default function PrescriptionGenerator() {
             {/* Medicines */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <label className="block text-sm font-semibold text-gray-700">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
                   Medicines *
                 </label>
                 <button
@@ -394,8 +394,8 @@ export default function PrescriptionGenerator() {
               <div className="space-y-4">
                 {medicines.map((med, index) => (
                   <div key={index} className="border border-gray-200 rounded-xl p-4 bg-gray-50">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-semibold text-gray-700">
+                  <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                         Medicine {index + 1}
                       </span>
                       {medicines.length > 1 && (
@@ -410,57 +410,57 @@ export default function PrescriptionGenerator() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs text-gray-600 mb-1">Medicine Name *</label>
+                        <label className="block text-xs text-gray-600 dark:text-gray-300 mb-1">Medicine Name *</label>
                         <input
                           type="text"
                           value={med.name}
                           onChange={(e) => updateMedicine(index, 'name', e.target.value)}
                           placeholder="e.g., Clindamycin Gel"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs text-gray-600 mb-1">Dosage *</label>
+                        <label className="block text-xs text-gray-600 dark:text-gray-300 mb-1">Dosage *</label>
                         <input
                           type="text"
                           value={med.dosage}
                           onChange={(e) => updateMedicine(index, 'dosage', e.target.value)}
                           placeholder="e.g., 1%"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs text-gray-600 mb-1">Frequency</label>
+                        <label className="block text-xs text-gray-600 dark:text-gray-300 mb-1">Frequency</label>
                         <input
                           type="text"
                           value={med.frequency}
                           onChange={(e) => updateMedicine(index, 'frequency', e.target.value)}
                           placeholder="e.g., Twice daily"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs text-gray-600 mb-1">Duration</label>
+                        <label className="block text-xs text-gray-600 dark:text-gray-300 mb-1">Duration</label>
                         <input
                           type="text"
                           value={med.duration}
                           onChange={(e) => updateMedicine(index, 'duration', e.target.value)}
                           placeholder="e.g., 2 weeks"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         />
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className="block text-xs text-gray-600 mb-1">Notes/Instructions</label>
+                        <label className="block text-xs text-gray-600 dark:text-gray-300 mb-1">Notes/Instructions</label>
                         <textarea
                           value={med.notes}
                           onChange={(e) => updateMedicine(index, 'notes', e.target.value)}
                           placeholder="Additional instructions for this medicine"
                           rows="2"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         />
                       </div>
                     </div>
@@ -471,7 +471,7 @@ export default function PrescriptionGenerator() {
 
             {/* Additional Notes */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 Additional Notes / Instructions
               </label>
               <textarea
@@ -479,7 +479,7 @@ export default function PrescriptionGenerator() {
                 onChange={(e) => setAdditionalNotes(e.target.value)}
                 placeholder="General instructions, follow-up date, precautions, etc."
                 rows="4"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
               />
             </div>
 
@@ -500,8 +500,8 @@ export default function PrescriptionGenerator() {
               </Link>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-4">
-              <p className="text-sm text-blue-800">
+            <div className="bg-blue-50 dark:bg-slate-800 border border-blue-200 dark:border-slate-700 rounded-xl p-4 mt-4">
+              <p className="text-sm text-blue-800 dark:text-blue-200">
                 <strong>Note:</strong> The prescription will be created and automatically sent to the selected patient. 
                 The patient will receive a notification immediately.
               </p>

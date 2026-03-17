@@ -34,6 +34,7 @@ import Prescriptions from "./pages/Prescriptions.jsx";
 import Reviews from "./pages/Reviews.jsx";
 import ViewPrescription from "./pages/patient/ViewPrescription.jsx";
 import DoctorFeedback from "./pages/doctor/DoctorFeedback.jsx";
+import DoctorSettings from "./pages/doctor/DoctorSettings.jsx";
 
 function Protected({ children, roles }) {
   const adminToken = localStorage.getItem("admin_token");
@@ -319,6 +320,14 @@ export default function App() {
             element={
               <Protected roles={["doctor", "admin"]}>
                 <DoctorFeedback />
+              </Protected>
+            }
+          />
+          <Route
+            path="/doctor/settings"
+            element={
+              <Protected roles={["doctor", "admin"]}>
+                <DoctorSettings />
               </Protected>
             }
           />
