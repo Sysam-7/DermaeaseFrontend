@@ -3,11 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { fetchNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '../services/users.js';
 import { verifyToken } from '../services/auth.js';
+import {
+  getMockNotifications,
+  markAllMockNotificationsAsRead,
+  markMockNotificationAsRead,
+  subscribeToPaymentUpdates,
+} from '../services/appointmentPayments.js';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function NotificationBell() {
   const [notifications, setNotifications] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef(null);
@@ -26,6 +33,7 @@ export default function NotificationBell() {
         const vb = await verifyToken(token);
         if (vb && vb.success && vb.data?.user) {
           const user = vb.data.user;
+          setCurrentUser(user);
           socket = io(API, { transports: ['websocket'] });
           socket.on('connect', () => {
             socket.emit('join', user._id);
@@ -64,6 +72,19 @@ export default function NotificationBell() {
     };
   }, [token]);
 
+  useEffect(() => {
+    if (!token) return undefined;
+    return subscribeToPaymentUpdates(() => {
+      loadNotifications();
+    });
+  }, [token, currentUser?._id]);
+
+  useEffect(() => {
+    if (token && currentUser?._id) {
+      loadNotifications();
+    }
+  }, [token, currentUser?._id]);
+
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -83,9 +104,20 @@ export default function NotificationBell() {
     try {
       const response = await fetchNotifications(token);
       const notificationList = response.data || response.notifications || [];
-      setNotifications(notificationList);
+      const userRole = localStorage.getItem('role');
+      const mockNotifications = getMockNotifications({
+        userRole,
+        userId: currentUser?._id || '',
+      });
+      setNotifications([...mockNotifications, ...notificationList]);
     } catch (err) {
       console.error('Failed to load notifications:', err);
+      const userRole = localStorage.getItem('role');
+      const mockNotifications = getMockNotifications({
+        userRole,
+        userId: currentUser?._id || '',
+      });
+      setNotifications(mockNotifications);
     }
   };
 
@@ -94,7 +126,11 @@ export default function NotificationBell() {
   const handleNotificationClick = async (notification) => {
     if (!notification.read) {
       try {
-        await markNotificationAsRead(notification._id, token);
+        if (String(notification._id).startsWith('mock-payment-')) {
+          markMockNotificationAsRead(notification._id);
+        } else {
+          await markNotificationAsRead(notification._id, token);
+        }
         setNotifications((prev) =>
           prev.map((n) => (n._id === notification._id ? { ...n, read: true } : n))
         );
@@ -133,6 +169,10 @@ export default function NotificationBell() {
     if (!token) return;
     try {
       await markAllNotificationsAsRead(token);
+      markAllMockNotificationsAsRead({
+        userRole: localStorage.getItem('role'),
+        userId: currentUser?._id || '',
+      });
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     } catch (err) {
       console.error('Failed to mark all as read:', err);
@@ -159,6 +199,7 @@ export default function NotificationBell() {
     if (type === 'appointment_confirmed') return '✅';
     if (type === 'appointment_cancelled') return '❌';
     if (type === 'appointment_completed') return '✔️';
+    if (type === 'appointment_payment_success') return '💳';
     if (type === 'chat_message') return '💬';
     if (type === 'prescription_sent') return '💊';
     return '🔔';

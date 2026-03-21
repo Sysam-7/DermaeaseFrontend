@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
+import { useNavigate } from 'react-router-dom';
 import { getMyAppointments } from '../../services/appointments.js';
 import { verifyToken } from '../../services/auth.js';
 import FeedbackModal from '../../components/FeedbackModal.jsx';
+import { isAppointmentPaid, subscribeToPaymentUpdates } from '../../services/appointmentPayments.js';
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function MyAppointments() {
   const [appts, setAppts] = useState([]);
+  const [paidMap, setPaidMap] = useState({});
   const [feedbackModal, setFeedbackModal] = useState({ isOpen: false, doctorId: null, doctorName: '' });
+  const navigate = useNavigate();
 
   useEffect(() => {
     let socket;
@@ -29,6 +33,19 @@ export default function MyAppointments() {
 
     return () => { if (socket) socket.disconnect(); };
   }, []);
+
+  useEffect(() => {
+    const refreshPaidState = () => {
+      const next = {};
+      appts.forEach((a) => {
+        next[String(a._id)] = isAppointmentPaid(a._id);
+      });
+      setPaidMap(next);
+    };
+
+    refreshPaidState();
+    return subscribeToPaymentUpdates(refreshPaidState);
+  }, [appts]);
 
   function formatDateTime(appointment) {
     if (appointment.date) {
@@ -106,6 +123,22 @@ export default function MyAppointments() {
                     {a.status.charAt(0).toUpperCase() + a.status.slice(1)}
                   </span>
                 </div>
+                {a.status === 'confirmed' && !paidMap[String(a._id)] && (
+                  <div className="mt-2 p-3 rounded-md bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm">
+                    Pay your amount to continue to appointment with {doctorName}.
+                    <button
+                      onClick={() => navigate(`/patient/appointment-payment/${a._id}`)}
+                      className="ml-3 px-3 py-1.5 rounded bg-purple-600 text-white hover:bg-purple-700"
+                    >
+                      Pay Now
+                    </button>
+                  </div>
+                )}
+                {a.status === 'confirmed' && paidMap[String(a._id)] && (
+                  <div className="mt-2 p-2 rounded-md bg-green-50 border border-green-200 text-green-700 text-sm">
+                    Payment successful. Appointment with {doctorName} is ready.
+                  </div>
+                )}
                 {a.createdAt && (
                   <div className="text-xs text-gray-500 mt-2">
                     Booked on: {new Date(a.createdAt).toLocaleString()}
