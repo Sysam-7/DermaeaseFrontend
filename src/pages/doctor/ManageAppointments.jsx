@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { getMyAppointments, updateAppointmentStatus } from "../../services/appointments.js";
 import NotificationBell from "../../components/NotificationBell";
+import { isAppointmentPaid, subscribeToPaymentUpdates } from "../../services/appointmentPayments.js";
 
 export default function ManageAppointments() {
   const [appointments, setAppointments] = useState([]);
+  const [paidMap, setPaidMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -29,6 +31,19 @@ export default function ManageAppointments() {
   useEffect(() => {
     loadAppointments();
   }, []);
+
+  useEffect(() => {
+    const refreshPaidState = () => {
+      const next = {};
+      appointments.forEach((a) => {
+        next[String(a._id)] = isAppointmentPaid(a._id);
+      });
+      setPaidMap(next);
+    };
+
+    refreshPaidState();
+    return subscribeToPaymentUpdates(refreshPaidState);
+  }, [appointments]);
 
   // Update appointment status (confirm, complete, cancel)
   const handleUpdateStatus = async (id, status) => {
@@ -188,6 +203,7 @@ export default function ManageAppointments() {
                   <th className="p-4">Patient</th>
                   <th className="p-4">Date &amp; Time</th>
                   <th className="p-4">Status</th>
+                  <th className="p-4">Payment</th>
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -228,6 +244,17 @@ export default function ManageAppointments() {
                         </span>
                       </td>
                       <td className="p-4">
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            paidMap[String(app._id)]
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {paidMap[String(app._id)] ? "Paid" : "Pending"}
+                        </span>
+                      </td>
+                      <td className="p-4">
                         <div className="flex justify-end gap-2">
                           {app.status === "pending" && (
                             <button
@@ -239,7 +266,7 @@ export default function ManageAppointments() {
                               Confirm
                             </button>
                           )}
-                          {app.status === "confirmed" && (
+                          {app.status === "confirmed" && paidMap[String(app._id)] && (
                             <button
                               onClick={() =>
                                 handleUpdateStatus(app._id, "completed")
@@ -248,6 +275,11 @@ export default function ManageAppointments() {
                             >
                               Complete
                             </button>
+                          )}
+                          {app.status === "confirmed" && !paidMap[String(app._id)] && (
+                            <span className="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
+                              Waiting for payment
+                            </span>
                           )}
                           {app.status !== "cancelled" &&
                             app.status !== "completed" && (

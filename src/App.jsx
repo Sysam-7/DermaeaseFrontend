@@ -24,6 +24,7 @@ import Booking from "./pages/patient/Booking.jsx";
 import PatientChat from "./pages/patient/PatientChat.jsx";
 import DoctorChats from "./pages/doctor/DoctorChats.jsx";
 import MyAppointments from "./pages/patient/MyAppointments.jsx";
+import AppointmentPayment from "./pages/patient/AppointmentPayment.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 import ResetPassword from "./pages/auth/ResetPassword.jsx";
 import VerifyOTP from "./pages/auth/VerifyOTP.jsx";
@@ -218,6 +219,14 @@ export default function App() {
             element={
               <Protected roles={["patient", "admin"]}>
                 <MyAppointments />
+              </Protected>
+            }
+          />
+          <Route
+            path="/patient/appointment-payment/:appointmentId"
+            element={
+              <Protected roles={["patient", "admin"]}>
+                <AppointmentPayment />
               </Protected>
             }
           />
