@@ -1,10 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Page from '../../components/ui/Page.jsx';
-import Card from '../../components/ui/Card.jsx';
-import Input from '../../components/ui/Input.jsx';
-import Button from '../../components/ui/Button.jsx';
-import { loginAdminAccount } from '../../services/admin.js';
+import { Link, useNavigate } from 'react-router-dom';
+import { loginAdmin } from '../../services/admin.js';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -22,43 +18,40 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
     try {
-      const data = await loginAdminAccount({ email: form.email.trim(), password: form.password });
+      const data = await loginAdmin({
+        email: form.email.trim(),
+        password: form.password,
+      });
       localStorage.setItem('admin_token', data.token);
-      navigate('/admin/dashboard');
+      navigate('/admin/dashboard', { replace: true });
     } catch (err) {
-      setError(err.message || 'Login failed');
+      const reasonText = err?.body?.reason ? ` Reason: ${err.body.reason}` : '';
+      setError((err.message || 'Login failed') + reasonText);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <Page title="Admin login" subtitle="Secure entry for administrators">
-      <Card className="max-w-md mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Email"
-            name="email"
-            type="email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            label="Password"
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
+    <div className="min-h-screen bg-[#F4F1FA] p-6 dark:bg-slate-950">
+      <div className="mx-auto max-w-md rounded-2xl border border-[#E8E0F5] bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <h1 className="text-2xl font-bold text-[#2D2640] dark:text-gray-100">Admin Portal Login</h1>
+        <p className="mt-1 text-sm text-[#6B6280] dark:text-slate-400">Access with admin credentials.</p>
+
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <input name="email" type="email" placeholder="Admin email" value={form.email} onChange={handleChange} required className="w-full rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100" />
+          <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required className="w-full rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100" />
           {error && <p className="text-sm text-red-600">{error}</p>}
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Signing in…' : 'Login'}
-          </Button>
+          <button type="submit" disabled={loading} className="w-full rounded-lg bg-[#5B3FA8] px-4 py-2 font-semibold text-white hover:bg-[#4a3289] disabled:opacity-60">
+            {loading ? 'Signing in...' : 'Login as Admin'}
+          </button>
         </form>
-      </Card>
-    </Page>
+
+        <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
+          First time? <Link className="font-semibold text-[#5B3FA8]" to="/admin/register">Register first admin</Link>
+        </p>
+      </div>
+    </div>
   );
 }
 

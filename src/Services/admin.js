@@ -1,4 +1,3 @@
-// Ensure API URL includes /api prefix
 const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
 const API = baseURL.endsWith('/api') ? baseURL : `${baseURL}/api`;
 
@@ -31,26 +30,15 @@ async function request(path, { method = 'GET', body, headers = {}, token, withAu
 }
 
 export const checkAdminExists = () => request('/admin/check');
-export const createAdminAccount = (payload) => request('/admin/create', { method: 'POST', body: payload });
-export const loginAdminAccount = (payload) => request('/admin/login', { method: 'POST', body: payload });
-export const fetchDoctorsForAdmin = (token) =>
-  request('/doctors', { method: 'GET', token, withAuth: Boolean(token) });
-export const deleteDoctorAsAdmin = (doctorId, token) =>
-  request(`/doctors/${doctorId}`, { method: 'DELETE', token, withAuth: true });
-
-export const fetchSmsLogs = (token) =>
-  request('/notifications/sms/logs', { method: 'GET', token, withAuth: true });
-
-export const fetchUserDoctors = (token) =>
-  request('/users/doctors', { method: 'GET', token, withAuth: Boolean(token) });
-
-export const approveDoctor = (userId, token) =>
-  request(`/users/${userId}/approve`, { method: 'POST', token, withAuth: true });
-
-export const fetchReviewsByDoctor = (doctorId, token) =>
-  request(`/reviews/${doctorId}`, { method: 'GET', token, withAuth: Boolean(token) });
-
-export const deleteReview = (reviewId, token) =>
-  request(`/reviews/${reviewId}`, { method: 'DELETE', token, withAuth: true });
+export const registerFirstAdmin = (payload) => request('/admin/register-first', { method: 'POST', body: payload });
+export const loginAdmin = (payload) => request('/admin/login', { method: 'POST', body: payload });
+export const fetchAdminUsers = (token) =>
+  request('/admin/users', { method: 'GET', token, withAuth: Boolean(token) });
+export const restrictUserByAdmin = (userId, reason, token) =>
+  request(`/admin/users/${userId}/restrict`, { method: 'PATCH', body: { reason }, token, withAuth: true });
+export const unrestrictUserByAdmin = (userId, token) =>
+  request(`/admin/users/${userId}/unrestrict`, { method: 'PATCH', token, withAuth: true });
+export const deleteUserByAdmin = (userId, reason, token) =>
+  request(`/admin/users/${userId}/delete`, { method: 'PATCH', body: { reason }, token, withAuth: true });
 
 

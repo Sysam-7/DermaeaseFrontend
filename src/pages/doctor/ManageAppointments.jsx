@@ -2,12 +2,21 @@ import { useEffect, useState } from "react";
 import { getMyAppointments, updateAppointmentStatus } from "../../services/appointments.js";
 import NotificationBell from "../../components/NotificationBell";
 import { isAppointmentPaid, subscribeToPaymentUpdates } from "../../services/appointmentPayments.js";
+import DoctorSidebar from "../../components/doctor/DoctorSidebar";
+
+function isPaidForAppointment(a) {
+  if (!a) return false;
+  if (a.paymentStatus === "paid") return true;
+  return isAppointmentPaid(a._id);
+}
 
 export default function ManageAppointments() {
   const [appointments, setAppointments] = useState([]);
-  const [paidMap, setPaidMap] = useState({});
+  const [, bump] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const APPOINTMENTS_PER_PAGE = 10;
 
   // Load appointments from backend
   const loadAppointments = async () => {
@@ -33,17 +42,8 @@ export default function ManageAppointments() {
   }, []);
 
   useEffect(() => {
-    const refreshPaidState = () => {
-      const next = {};
-      appointments.forEach((a) => {
-        next[String(a._id)] = isAppointmentPaid(a._id);
-      });
-      setPaidMap(next);
-    };
-
-    refreshPaidState();
-    return subscribeToPaymentUpdates(refreshPaidState);
-  }, [appointments]);
+    return subscribeToPaymentUpdates(() => bump((x) => x + 1));
+  }, []);
 
   // Update appointment status (confirm, complete, cancel)
   const handleUpdateStatus = async (id, status) => {
@@ -52,7 +52,9 @@ export default function ManageAppointments() {
       const result = await updateAppointmentStatus(id, status, token);
       if (result.success) {
         setAppointments((prev) =>
-          prev.map((a) => (a._id === id ? { ...a, status: result.data.status } : a))
+          prev.map((a) =>
+            a._id === id ? { ...a, ...result.data, status: result.data.status ?? a.status } : a
+          )
         );
       } else {
         alert(result.message || "Failed to update status");
@@ -95,67 +97,51 @@ export default function ManageAppointments() {
     }
   };
 
+  const getAppointmentTimestamp = (appointment) => {
+    if (!appointment?.date) return 0;
+    const date = new Date(appointment.date);
+    if (appointment.time) {
+      const [hours, minutes] = appointment.time.split(":");
+      date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+    } else {
+      date.setHours(0, 0, 0, 0);
+    }
+    return date.getTime();
+  };
+
+  const getRequestTimestamp = (appointment) => {
+    if (appointment?.createdAt) {
+      const created = new Date(appointment.createdAt).getTime();
+      if (!Number.isNaN(created)) return created;
+    }
+    // Fallback for older or malformed records
+    return getAppointmentTimestamp(appointment);
+  };
+
+  const sortedAppointments = [...appointments].sort(
+    (a, b) => getRequestTimestamp(b) - getRequestTimestamp(a)
+  );
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(sortedAppointments.length / APPOINTMENTS_PER_PAGE)
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const startIndex = (currentPage - 1) * APPOINTMENTS_PER_PAGE;
+  const paginatedAppointments = sortedAppointments.slice(
+    startIndex,
+    startIndex + APPOINTMENTS_PER_PAGE
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
-      {/* Sidebar (match DoctorDashboard styling) */}
-      <aside className="w-64 bg-white dark:bg-slate-900 shadow-lg border-r border-gray-200 dark:border-slate-700 p-6 flex flex-col justify-between min-h-screen">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-10">DermaEase</h2>
-
-          <nav className="flex flex-col gap-4">
-            <a
-              href="/doctor/dashboard"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
-            >
-              Dashboard
-            </a>
-
-            <a
-              href="/doctor/manage-appointments"
-              className="flex items-center gap-3 p-3 rounded-xl bg-yellow-100 text-gray-900 font-semibold shadow-sm hover:shadow-md transition"
-            >
-              Appointments
-            </a>
-
-            <a
-              href="/doctor/chats"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
-            >
-              Chats
-            </a>
-
-            <a
-              href="/doctor/feedback"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
-            >
-              Feedback
-            </a>
-
-            <a
-              href="/doctor/prescription-generator"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
-            >
-              Prescription Generator
-            </a>
-          </nav>
-        </div>
-
-        <div className="flex flex-col gap-4 mt-10">
-          <a
-            href="/doctor/settings"
-            className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
-          >
-            Settings
-          </a>
-
-          <a
-            href="/logout"
-            className="flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 text-red-600 font-medium transition"
-          >
-            Logout
-          </a>
-        </div>
-      </aside>
+      <DoctorSidebar />
 
       {/* Main content */}
       <main className="flex-1 p-12">
@@ -189,14 +175,15 @@ export default function ManageAppointments() {
           <div className="p-6 text-gray-600 dark:text-gray-300 bg-white dark:bg-slate-900 rounded-2xl shadow">
             Loading upcoming appointments…
           </div>
-        ) : appointments.length === 0 ? (
+        ) : sortedAppointments.length === 0 ? (
           <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl shadow text-gray-600 dark:text-gray-300">
             No upcoming appointments found. Once patients book from the{" "}
             <span className="font-semibold">Find Doctors</span> page, they will
             appear here.
           </div>
         ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow overflow-hidden">
+          <>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow overflow-hidden">
             <table className="w-full text-left">
               <thead className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wide">
                 <tr>
@@ -208,7 +195,7 @@ export default function ManageAppointments() {
                 </tr>
               </thead>
               <tbody className="text-gray-900 dark:text-gray-100">
-                {appointments.map((app) => {
+                {paginatedAppointments.map((app) => {
                   const patientName =
                     app.patientId?.name || app.patientUsername || "Unknown Patient";
                   const patientEmail = app.patientId?.email || "";
@@ -246,12 +233,12 @@ export default function ManageAppointments() {
                       <td className="p-4">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            paidMap[String(app._id)]
+                            isPaidForAppointment(app)
                               ? "bg-green-100 text-green-800"
                               : "bg-yellow-100 text-yellow-800"
                           }`}
                         >
-                          {paidMap[String(app._id)] ? "Paid" : "Pending"}
+                          {isPaidForAppointment(app) ? "Paid" : "Pending"}
                         </span>
                       </td>
                       <td className="p-4">
@@ -266,7 +253,7 @@ export default function ManageAppointments() {
                               Confirm
                             </button>
                           )}
-                          {app.status === "confirmed" && paidMap[String(app._id)] && (
+                          {app.status === "confirmed" && isPaidForAppointment(app) && (
                             <button
                               onClick={() =>
                                 handleUpdateStatus(app._id, "completed")
@@ -276,7 +263,7 @@ export default function ManageAppointments() {
                               Complete
                             </button>
                           )}
-                          {app.status === "confirmed" && !paidMap[String(app._id)] && (
+                          {app.status === "confirmed" && !isPaidForAppointment(app) && (
                             <span className="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
                               Waiting for payment
                             </span>
@@ -299,7 +286,37 @@ export default function ManageAppointments() {
                 })}
               </tbody>
             </table>
+            </div>
+          <div className="flex items-center justify-between border-t border-gray-200 dark:border-slate-700 px-4 py-3">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              {`Showing ${sortedAppointments.length === 0 ? 0 : startIndex + 1}-${Math.min(
+                startIndex + APPOINTMENTS_PER_PAGE,
+                sortedAppointments.length
+              )} of ${sortedAppointments.length} appointments`}
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:text-gray-200 dark:hover:bg-slate-800"
+              >
+                Previous
+              </button>
+              <span className="text-sm text-gray-700 dark:text-gray-200">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:text-gray-200 dark:hover:bg-slate-800"
+              >
+                Next
+              </button>
+            </div>
           </div>
+          </>
         )}
       </main>
     </div>

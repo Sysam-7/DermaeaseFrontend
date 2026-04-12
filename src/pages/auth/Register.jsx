@@ -36,13 +36,17 @@ export default function Register() {
   }
 
   function handleGoogleRegister() {
-    // Use the correct API URL with /api prefix
-    const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
-    const apiURL = apiBase.endsWith('/api') ? apiBase : `${apiBase}/api`;
-    const googleAuthURL = `${apiURL}/auth/google?role=${role}`;
-    
+    const qs = new URLSearchParams({ role }).toString();
+    let googleAuthURL;
+    if (typeof window !== 'undefined' && !import.meta.env.VITE_API_URL) {
+      googleAuthURL = `${window.location.origin}/api/auth/google?${qs}`;
+    } else {
+      const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+      const apiURL = apiBase.endsWith('/api') ? apiBase : `${apiBase}/api`;
+      googleAuthURL = `${apiURL}/auth/google?${qs}`;
+    }
     console.log('Opening Google OAuth for registration:', googleAuthURL);
-    window.location.href = googleAuthURL; // Redirect to Google OAuth
+    window.location.href = googleAuthURL;
   }
 
   return (

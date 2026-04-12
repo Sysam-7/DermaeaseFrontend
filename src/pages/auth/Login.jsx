@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { login, googleLogin } from '../../services/auth.js';
 import '../Login.page.css';
 
@@ -12,9 +12,18 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     document.title = 'Login • DermaEase';
+    const params = new URLSearchParams(location.search);
+    const accessMessage = params.get('message');
+    const accessReason = params.get('reason');
+    if (accessMessage) {
+      const fullMessage = `${accessMessage}${accessReason ? ` Reason: ${accessReason}` : ''}`;
+      setError(fullMessage);
+      window.alert(fullMessage);
+    }
 
     let script;
     function renderGsiButton() {
@@ -52,7 +61,7 @@ export default function Login() {
     return () => {
       if (script && script.parentNode) script.parentNode.removeChild(script);
     };
-  }, []);
+  }, [location.search]);
 
   async function handleCredentialResponse(credentialResponse) {
     setError('');
@@ -97,20 +106,30 @@ export default function Login() {
       navigate(role === 'doctor' ? '/doctor/dashboard' : '/patient');
 
     } catch (err) {
-      setError(err?.message || 'Login failed');
+      const reasonText = err?.body?.reason ? ` Reason: ${err.body.reason}` : '';
+      const message = (err?.message || 'Login failed') + reasonText;
+      setError(message);
+      if (err?.status === 403 || (err?.body?.reason && err?.message?.toLowerCase().includes('admin'))) {
+        window.alert(message);
+      }
     } finally {
       setLoading(false);
     }
   }
 
   function openServerGoogle() {
-    // Use the correct API URL with /api prefix
-    const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
-    const apiURL = apiBase.endsWith('/api') ? apiBase : `${apiBase}/api`;
-    const googleAuthURL = `${apiURL}/auth/google`;
-    
+    // Always use same-origin /api in the browser so Vite proxy works (DEV + preview + prod same-origin).
+    // Only use absolute URL if VITE_API_URL is set (split hosting).
+    let googleAuthURL;
+    if (typeof window !== 'undefined' && !import.meta.env.VITE_API_URL) {
+      googleAuthURL = `${window.location.origin}/api/auth/google`;
+    } else {
+      const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+      const apiURL = apiBase.endsWith('/api') ? apiBase : `${apiBase}/api`;
+      googleAuthURL = `${apiURL}/auth/google`;
+    }
     console.log('Opening Google OAuth:', googleAuthURL);
-    window.location.href = googleAuthURL; // Use window.location instead of window.open for OAuth
+    window.location.href = googleAuthURL;
   }
 
   return (

@@ -152,9 +152,10 @@ export default function Booking() {
           'Appointment Booked Successfully!',
           'Your appointment has been successfully booked. Please wait for the doctor\'s approval. You will be notified once the doctor confirms your appointment.'
         );
-        // Reset form and refresh slots
-        setTime('');
-        await fetchAvailableSlots();
+        // Briefly show success, then take patient back to dashboard
+        setTimeout(() => {
+          navigate('/patient', { replace: true });
+        }, 1200);
       } else {
         showModal('error', 'Booking Failed', result.message || 'Unable to book appointment. Please try again.');
       }
@@ -190,17 +191,17 @@ export default function Booking() {
         title={modal.title}
         message={modal.message}
       />
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 text-slate-900">
-      <div className="mx-auto max-w-6xl px-4 py-10 space-y-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 text-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-gray-100">
+      <div className="mx-auto max-w-6xl space-y-8 px-4 py-10">
         <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">Booking flow</p>
-            <h1 className="mt-1 text-3xl font-bold leading-tight text-slate-900">Book your consultation</h1>
-            <p className="mt-1 text-sm text-slate-600">Choose your doctor, pick an available date and time, and confirm instantly.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500 dark:text-indigo-400">Booking flow</p>
+            <h1 className="mt-1 text-3xl font-bold leading-tight text-slate-900 dark:text-gray-100">Book your consultation</h1>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Choose your doctor, pick an available date and time, and confirm instantly.</p>
           </div>
           <a
             href="/patient/find-doctors"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-indigo-400 hover:text-indigo-600 hover:shadow-md"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-indigo-400 hover:text-indigo-600 hover:shadow-md dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-indigo-500 dark:hover:text-indigo-300"
           >
             ← Browse doctors
           </a>
@@ -208,20 +209,20 @@ export default function Booking() {
 
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/80 shadow-xl backdrop-blur-sm">
+            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/80 shadow-xl backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90">
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400" />
 
-              <div className="flex flex-col gap-2 border-b border-slate-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="font-semibold text-slate-900">Appointment details</div>
-                <div className="text-sm text-slate-500">Secure, fast booking</div>
+              <div className="flex flex-col gap-2 border-b border-slate-100 px-6 py-4 dark:border-slate-700 sm:flex-row sm:items-center sm:justify-between">
+                <div className="font-semibold text-slate-900 dark:text-gray-100">Appointment details</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">Secure, fast booking</div>
               </div>
 
               <div className="space-y-6 px-6 py-6">
                 <div className="space-y-2">
                   <label className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-500">Doctor</label>
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 shadow-inner transition focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100">
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 shadow-inner transition focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 dark:border-slate-600 dark:bg-slate-800 dark:focus-within:ring-indigo-900/50">
                     <select
-                      className="w-full bg-transparent text-sm text-slate-800 outline-none"
+                      className="w-full bg-transparent text-sm text-slate-800 outline-none dark:text-gray-100"
                       value={doctorId}
                       onChange={(e)=>setDoctorId(e.target.value)}
                     >
@@ -258,13 +259,13 @@ export default function Booking() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <label className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-500">Date</label>
-                    <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 shadow-inner transition focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100">
+                    <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 shadow-inner transition focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 dark:border-slate-600 dark:bg-slate-800 dark:focus-within:ring-indigo-900/50">
                       <span className="text-slate-400">🗓</span>
                       <input
                         type="date"
                         value={date}
                         onChange={(e)=>setDate(e.target.value)}
-                        className="w-full bg-transparent text-sm text-slate-800 outline-none [color-scheme:light]"
+                        className="w-full bg-transparent text-sm text-slate-800 outline-none [color-scheme:light] dark:text-gray-100 dark:[color-scheme:dark]"
                       />
                     </div>
                   </div>
@@ -327,11 +328,11 @@ export default function Booking() {
           </div>
 
           <div className="space-y-4">
-            <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-lg">
+            <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-lg dark:border-slate-700 dark:bg-slate-900/90">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">Summary</p>
-                  <h3 className="text-lg font-semibold text-slate-900">Booking overview</h3>
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-gray-100">Booking overview</h3>
                 </div>
                 <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">Step 2/2</span>
               </div>
