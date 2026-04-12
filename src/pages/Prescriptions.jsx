@@ -48,19 +48,19 @@ export default function Prescriptions() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 px-4 py-6 md:px-8">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 px-4 py-6 dark:from-slate-950 dark:to-slate-900 md:px-8">
+      <div className="mx-auto max-w-5xl space-y-6">
         {/* Header */}
         <header className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900">My Prescriptions</h1>
-            <p className="text-sm md:text-base text-slate-600 mt-1">
+            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-gray-100 md:text-4xl">My Prescriptions</h1>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 md:text-base">
               View and download prescriptions your doctors have shared with you.
             </p>
           </div>
           <Link
             to="/patient"
-            className="px-4 py-2 bg-white border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition text-sm font-medium"
+            className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             ← Back to Dashboard
           </Link>
@@ -71,13 +71,13 @@ export default function Prescriptions() {
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4" />
-              <p className="text-gray-600">Loading your prescriptions...</p>
+              <p className="text-gray-600 dark:text-slate-400">Loading your prescriptions...</p>
             </div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
-            <h2 className="text-lg font-semibold text-red-700 mb-2">Unable to load prescriptions</h2>
-            <p className="text-sm text-red-600 mb-4">{error}</p>
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center dark:border-red-900 dark:bg-red-950/40">
+            <h2 className="mb-2 text-lg font-semibold text-red-700 dark:text-red-300">Unable to load prescriptions</h2>
+            <p className="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
             <button
               onClick={loadPrescriptions}
               className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition"
@@ -86,10 +86,10 @@ export default function Prescriptions() {
             </button>
           </div>
         ) : items.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-            <div className="text-5xl mb-3">💊</div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">No prescriptions yet</h2>
-            <p className="text-gray-600 text-sm">
+          <div className="rounded-2xl bg-white p-8 text-center shadow-lg dark:bg-slate-900 dark:ring-1 dark:ring-slate-700">
+            <div className="mb-3 text-5xl">💊</div>
+            <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100">No prescriptions yet</h2>
+            <p className="text-sm text-gray-600 dark:text-slate-400">
               When your doctor creates a prescription for you, it will appear here for easy access and download.
             </p>
           </div>
@@ -101,12 +101,12 @@ export default function Prescriptions() {
               return (
                 <div
                   key={p._id}
-                  className="bg-white rounded-2xl shadow-md border border-yellow-100 p-5 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all"
+                  className="flex flex-col justify-between rounded-2xl border border-yellow-100 bg-white p-5 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl dark:border-slate-700 dark:bg-slate-900"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-gray-900">{doctorName}</h3>
-                      <span className="text-xs px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 font-medium">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{doctorName}</h3>
+                      <span className="rounded-full bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
                         {formatDate(p.createdAt)}
                       </span>
                     </div>

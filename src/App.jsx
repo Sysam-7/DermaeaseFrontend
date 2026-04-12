@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Home from "./pages/common/Home.jsx";
@@ -19,12 +19,12 @@ import DoctorProfile from "./pages/doctors/DoctorProfile.jsx";
 import AdminSetup from "./pages/admin/AdminSetup.jsx";
 import AdminLogin from "./pages/admin/AdminLogin.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import { checkAdminExists } from "./services/admin.js";
 import Booking from "./pages/patient/Booking.jsx";
 import PatientChat from "./pages/patient/PatientChat.jsx";
 import DoctorChats from "./pages/doctor/DoctorChats.jsx";
 import MyAppointments from "./pages/patient/MyAppointments.jsx";
 import AppointmentPayment from "./pages/patient/AppointmentPayment.jsx";
+import KhaltiReturn from "./pages/patient/KhaltiReturn.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 import ResetPassword from "./pages/auth/ResetPassword.jsx";
 import VerifyOTP from "./pages/auth/VerifyOTP.jsx";
@@ -36,6 +36,7 @@ import Reviews from "./pages/Reviews.jsx";
 import ViewPrescription from "./pages/patient/ViewPrescription.jsx";
 import DoctorFeedback from "./pages/doctor/DoctorFeedback.jsx";
 import DoctorSettings from "./pages/doctor/DoctorSettings.jsx";
+import PatientSettings from "./pages/patient/PatientSettings.jsx";
 
 function Protected({ children, roles }) {
   const adminToken = localStorage.getItem("admin_token");
@@ -78,7 +79,6 @@ export default function App() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const shortcutInFlight = useRef(false);
 
   useEffect(() => {
     const name = localStorage.getItem("name");
@@ -86,84 +86,36 @@ export default function App() {
     if (name || role) setUser({ name, role });
   }, []);
 
-  const handleAdminShortcut = useCallback(async () => {
-    try {
-      console.log("🔑 Admin shortcut triggered (A+8)");
-      const res = await checkAdminExists();
-      console.log("Admin check response:", res);
-      if (res?.adminExists === false) {
-        console.log("No admin exists, navigating to setup");
-        navigate("/admin/setup");
-      } else if (res?.adminExists === true) {
-        console.log("Admin exists, navigating to login");
-        navigate("/admin/login");
-      } else {
-        console.warn("Unexpected admin check response:", res);
-      }
-    } catch (err) {
-      console.error("❌ Admin check failed:", err);
-      // Still navigate to login on error
-      navigate("/admin/login");
+  // Apply saved light/dark theme on load so every route respects `doctor_theme` without opening Settings first.
+  useEffect(() => {
+    const stored = localStorage.getItem("doctor_theme");
+    if (stored === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
     }
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
-    const pressed = new Set();
-
-    function maybeTriggerShortcut() {
-      if (shortcutInFlight.current) return;
-      shortcutInFlight.current = true;
-      handleAdminShortcut().finally(() => {
-        shortcutInFlight.current = false;
-      });
-    }
-
     function handleKeyDown(event) {
       // Ignore if typing in an input field
       if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
         return;
       }
 
-      // Check for 'a' or 'A' key
-      const key = event.key?.toLowerCase();
-      if (key === "a") {
-        pressed.add("a");
-      }
-      
-      // Check for '8' key (both regular and numpad)
-      if (event.key === "8" || event.code === "Digit8" || event.code === "Numpad8") {
-        pressed.add("8");
-      }
-      
-      // Trigger when both keys are pressed
-      if (pressed.has("a") && pressed.has("8")) {
-        event.preventDefault(); // Prevent default behavior
-        event.stopPropagation(); // Stop event bubbling
-        pressed.clear();
-        console.log("🔑 A+8 shortcut detected");
-        maybeTriggerShortcut();
+      const isEightKey = event.key === "8" || event.code === "Digit8" || event.code === "Numpad8";
+      if (event.ctrlKey && isEightKey) {
+        event.preventDefault();
+        event.stopPropagation();
+        navigate("/admin/login");
       }
     }
-
-    function handleKeyUp(event) {
-      const key = event.key?.toLowerCase();
-      if (key === "a") {
-        pressed.delete("a");
-      }
-      if (event.key === "8" || event.code === "Digit8" || event.code === "Numpad8") {
-        pressed.delete("8");
-      }
-    }
-
-    // Add event listeners
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
     
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [handleAdminShortcut]);
+  }, [navigate]);
 
   function handleLogout() {
     localStorage.removeItem("token");
@@ -175,6 +127,19 @@ export default function App() {
   // Determine if header should be hidden on certain routes
   const hideHeader = location.pathname === "/login" || location.pathname === "/register";
   const isAuthenticated = Boolean(localStorage.getItem("token"));
+  const isDoctorDashboardRoute =
+    location.pathname === "/doctor" || location.pathname === "/doctor/" || location.pathname === "/doctor/dashboard";
+  const isPatientDashboardRoute = location.pathname === "/patient" || location.pathname === "/patient/";
+  const isLandingPageRoute = location.pathname === "/";
+  const showGlobalBackButton = !isDoctorDashboardRoute && !isPatientDashboardRoute && !isLandingPageRoute;
+
+  const handleGlobalBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate("/", { replace: true });
+  };
 
   return (
     <>
@@ -182,6 +147,17 @@ export default function App() {
         <Navbar onLogout={handleLogout} isAuthenticated={isAuthenticated} />
       )}
       <div className={hideHeader ? "p-4" : "pt-20 p-4"}>
+        {showGlobalBackButton && (
+          <div className="mb-4">
+            <button
+              type="button"
+              onClick={handleGlobalBack}
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-md transition hover:border-indigo-400 hover:text-indigo-600 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+            >
+              ← Back
+            </button>
+          </div>
+        )}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -231,6 +207,14 @@ export default function App() {
             }
           />
           <Route
+            path="/patient/payment/khalti/return"
+            element={
+              <Protected roles={["patient", "admin"]}>
+                <KhaltiReturn />
+              </Protected>
+            }
+          />
+          <Route
             path="/prescriptions"
             element={
               <Protected roles={["patient", "admin"]}>
@@ -266,6 +250,14 @@ export default function App() {
 />
 
 
+          <Route
+            path="/patient/settings"
+            element={
+              <Protected roles={["patient", "admin"]}>
+                <PatientSettings />
+              </Protected>
+            }
+          />
           <Route
             path="/patient/*"
             element={
@@ -349,7 +341,8 @@ export default function App() {
             }
           />
           <Route path="/doctors/:id" element={<DoctorProfile />} />
-          <Route path="/admin/setup" element={<AdminSetup />} />
+          <Route path="/admin/setup" element={<Navigate to="/admin/register" replace />} />
+          <Route path="/admin/register" element={<AdminSetup />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route
             path="/admin/dashboard"

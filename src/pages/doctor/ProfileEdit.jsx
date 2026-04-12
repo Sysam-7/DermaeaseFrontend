@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { verifyToken } from '../../services/auth.js';
 import { updateCurrentUser } from '../../services/users.js';
 import { updateWorkingHours } from '../../services/appointments.js';
+import DoctorSidebar from '../../components/doctor/DoctorSidebar';
 
 export default function ProfileEdit() {
   const navigate = useNavigate();
@@ -116,65 +117,7 @@ export default function ProfileEdit() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
-      {/* Sidebar - Same as DoctorDashboard */}
-      <aside className="w-64 bg-white dark:bg-slate-900 shadow-lg border-r border-gray-200 dark:border-slate-700 p-6 flex flex-col justify-between min-h-screen">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-10">DermaEase</h2>
-
-          <nav className="flex flex-col gap-4">
-            <Link
-              to="/doctor/dashboard"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
-            >
-              Dashboard
-            </Link>
-
-            <Link
-              to="/doctor/profile"
-              className="flex items-center gap-3 p-3 rounded-xl bg-yellow-100 text-gray-900 font-semibold shadow-sm hover:shadow-md transition"
-            >
-              My Profile
-            </Link>
-
-            <Link
-              to="/doctor/manage-appointments"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
-            >
-              Appointments
-            </Link>
-
-            <Link
-              to="/doctor/chats"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
-            >
-              Chats
-            </Link>
-
-            <Link
-              to="/doctor/feedback"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
-            >
-              Feedback
-            </Link>
-          </nav>
-        </div>
-
-        <div className="flex flex-col gap-4 mt-10">
-          <Link
-            to="/doctor/settings"
-            className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition"
-          >
-            Settings
-          </Link>
-
-          <Link
-            to="/logout"
-            className="flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 text-red-600 font-medium transition"
-          >
-            Logout
-          </Link>
-        </div>
-      </aside>
+      <DoctorSidebar />
 
       {/* Main Content */}
       <main className="flex-1 p-12 overflow-y-auto">

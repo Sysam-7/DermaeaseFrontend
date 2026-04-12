@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Page from '../../components/ui/Page.jsx';
-import Card from '../../components/ui/Card.jsx';
-import Input from '../../components/ui/Input.jsx';
-import Button from '../../components/ui/Button.jsx';
-import { createAdminAccount } from '../../services/admin.js';
+import { registerFirstAdmin } from '../../services/admin.js';
 
 export default function AdminSetup() {
   const navigate = useNavigate();
@@ -30,7 +26,10 @@ export default function AdminSetup() {
 
     setLoading(true);
     try {
-      await createAdminAccount({ email: form.email.trim(), password: form.password });
+      await registerFirstAdmin({
+        email: form.email.trim(),
+        password: form.password,
+      });
       setSuccess('Admin created. Redirecting to login…');
       setTimeout(() => navigate('/admin/login'), 800);
     } catch (err) {
@@ -41,41 +40,22 @@ export default function AdminSetup() {
   }
 
   return (
-    <Page title="Admin setup" subtitle="Create the first secure admin account">
-      <Card className="max-w-lg mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Email"
-            name="email"
-            type="email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            label="Password"
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            label="Confirm password"
-            name="confirmPassword"
-            type="password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            required
-          />
+    <div className="min-h-screen bg-[#F4F1FA] p-6 dark:bg-slate-950">
+      <div className="mx-auto max-w-lg rounded-2xl border border-[#E8E0F5] bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <h1 className="text-2xl font-bold text-[#2D2640] dark:text-gray-100">Register First Admin</h1>
+        <p className="mt-1 text-sm text-[#6B6280] dark:text-slate-400">This can be done only once.</p>
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <input name="email" type="email" placeholder="Admin email" value={form.email} onChange={handleChange} required className="w-full rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100" />
+          <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required className="w-full rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100" />
+          <input name="confirmPassword" type="password" placeholder="Confirm password" value={form.confirmPassword} onChange={handleChange} required className="w-full rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100" />
           {error && <p className="text-sm text-red-600">{error}</p>}
           {success && <p className="text-sm text-green-600">{success}</p>}
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Creating…' : 'Create admin'}
-          </Button>
+          <button type="submit" className="w-full rounded-lg bg-[#5B3FA8] px-4 py-2 font-semibold text-white hover:bg-[#4a3289] disabled:opacity-60" disabled={loading}>
+            {loading ? 'Creating...' : 'Create Admin'}
+          </button>
         </form>
-      </Card>
-    </Page>
+      </div>
+    </div>
   );
 }
 

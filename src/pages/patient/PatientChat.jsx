@@ -161,7 +161,7 @@ export default function PatientChat() {
   }, [token]);
 
   return (
-    <div className="chat-shell text-slate-900">
+    <div className="chat-shell text-slate-900 dark:text-slate-100">
       <div className="mx-auto max-w-7xl px-4 py-10 lg:py-12 space-y-6">
         <header className="chat-hero flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between shadow-sm">
           <div>

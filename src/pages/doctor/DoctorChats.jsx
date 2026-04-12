@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import { getDoctorConversations, fetchChatHistory, sendChatMessage, fetchCurrentUser, fetchPrescriptions, sendPrescriptionToPatient } from '../../services/users.js';
 import { Link } from 'react-router-dom';
 import Toast from '../../components/Toast';
+import DoctorSidebar from '../../components/doctor/DoctorSidebar';
 
 export default function DoctorChats() {
   const [conversations, setConversations] = useState([]);
@@ -225,20 +226,16 @@ export default function DoctorChats() {
   }, [token]);
 
   return (
-    <div className="chat-shell text-slate-900 dark:text-slate-100">
-      <div className="mx-auto max-w-7xl px-4 py-10 lg:py-12 space-y-6">
+    <div className="min-h-screen bg-[#F4F1FA] text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex">
+      <DoctorSidebar />
+      <div className="chat-shell flex-1 text-slate-900 dark:text-slate-100">
+        <div className="mx-auto max-w-7xl px-4 py-10 lg:py-12 space-y-6">
         <header className="chat-hero flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between shadow-sm">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">Doctor workspace</p>
             <h1 className="mt-1 text-3xl font-bold leading-tight text-slate-900 dark:text-slate-100">Patient messages</h1>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Reply to patient inquiries and provide support.</p>
           </div>
-          <Link
-            to="/doctor/dashboard"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-md transition hover:border-indigo-400 hover:text-indigo-600 hover:shadow-lg"
-          >
-            ← Back to dashboard
-          </Link>
         </header>
 
         <div className="grid gap-6 lg:grid-cols-4">
@@ -394,24 +391,24 @@ export default function DoctorChats() {
             )}
           </div>
         </div>
-      </div>
+        </div>
 
-      {/* Prescription Modal */}
-      {showPrescriptionModal && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setShowPrescriptionModal(false);
-            }
-          }}
-          style={{ pointerEvents: 'auto' }}
-        >
+        {/* Prescription Modal */}
+        {showPrescriptionModal && (
           <div 
-            className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden flex flex-col"
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setShowPrescriptionModal(false);
+              }
+            }}
             style={{ pointerEvents: 'auto' }}
-            onClick={(e) => e.stopPropagation()}
           >
+            <div 
+              className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden flex flex-col"
+              style={{ pointerEvents: 'auto' }}
+              onClick={(e) => e.stopPropagation()}
+            >
             <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between">
               <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Send Prescription to {selectedPatient?.name}</h3>
               <button
@@ -478,19 +475,20 @@ export default function DoctorChats() {
                 </div>
               )}
             </div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Toast Notification */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-          duration={5000}
-        />
-      )}
+        {/* Toast Notification */}
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+            duration={5000}
+          />
+        )}
+      </div>
     </div>
   );
 }

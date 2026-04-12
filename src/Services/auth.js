@@ -1,6 +1,19 @@
-// Ensure API URL includes /api prefix
-const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
-const API = baseURL.endsWith('/api') ? baseURL : `${baseURL}/api`;
+/**
+ * API base for browser: same origin + /api so Vite proxy forwards to Express (any dev port).
+ * Override with VITE_API_URL when frontend and API are on different hosts (production).
+ */
+function getApiBase() {
+  const explicit = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+  if (explicit) {
+    return explicit.endsWith('/api') ? explicit : `${explicit}/api`;
+  }
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return `${window.location.origin}/api`;
+  }
+  return 'http://localhost:5000/api';
+}
+
+const API = getApiBase();
 
 async function handleResponse(res) {
   const text = await res.text();
