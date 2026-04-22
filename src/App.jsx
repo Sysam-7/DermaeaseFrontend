@@ -7,6 +7,7 @@ import Contact from "./pages/common/Contact.jsx";
 import Help from "./pages/common/Help.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
+import DoctorApplication from "./pages/auth/DoctorApplication.jsx";
 import BookingConfirmation from "./pages/patient/BookingConfirmation.jsx";
 import OAuthSuccess from "./pages/auth/OAuthSuccess.jsx";
 import PatientDashboard from "./pages/PatientDashboard.jsx";
@@ -19,6 +20,7 @@ import DoctorProfile from "./pages/doctors/DoctorProfile.jsx";
 import AdminSetup from "./pages/admin/AdminSetup.jsx";
 import AdminLogin from "./pages/admin/AdminLogin.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import DoctorApplications from "./pages/admin/DoctorApplications.jsx";
 import Booking from "./pages/patient/Booking.jsx";
 import PatientChat from "./pages/patient/PatientChat.jsx";
 import DoctorChats from "./pages/doctor/DoctorChats.jsx";
@@ -125,7 +127,10 @@ export default function App() {
   }
 
   // Determine if header should be hidden on certain routes
-  const hideHeader = location.pathname === "/login" || location.pathname === "/register";
+  const hideHeader =
+    location.pathname === "/login"
+    || location.pathname === "/register"
+    || location.pathname === "/register/doctor";
   const isAuthenticated = Boolean(localStorage.getItem("token"));
   const isDoctorDashboardRoute =
     location.pathname === "/doctor" || location.pathname === "/doctor/" || location.pathname === "/doctor/dashboard";
@@ -166,6 +171,7 @@ export default function App() {
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/register/doctor" element={<DoctorApplication />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
@@ -349,6 +355,14 @@ export default function App() {
             element={
               <Protected roles={["admin"]}>
                 <AdminDashboard />
+              </Protected>
+            }
+          />
+          <Route
+            path="/admin/doctor-applications"
+            element={
+              <Protected roles={["admin"]}>
+                <DoctorApplications />
               </Protected>
             }
           />

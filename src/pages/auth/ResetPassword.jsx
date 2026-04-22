@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { resetPassword } from '../../services/auth.js';
+import PasswordInput from '../../components/PasswordInput.jsx';
 
 function strongPassword(p) {
   return p.length >= 8 && /[A-Z]/.test(p) && /[a-z]/.test(p) && /\d/.test(p);
@@ -93,22 +94,22 @@ export default function ResetPassword() {
           <p className="text-xs text-gray-400 mb-6">Password must be 8+ characters with upper, lower case and a number</p>
 
           <form onSubmit={handleSubmit} className="login-form">
-            <input
-              className="input-field"
-              type="password"
-              placeholder="New password"
+            <PasswordInput
               value={password}
               onChange={e => setPassword(e.target.value)}
+              placeholder="New password"
               required
+              className="input-field pr-20"
+              containerClassName="w-full"
             />
 
-            <input
-              className="input-field"
-              type="password"
-              placeholder="Confirm password"
+            <PasswordInput
               value={confirm}
               onChange={e => setConfirm(e.target.value)}
+              placeholder="Confirm password"
               required
+              className="input-field pr-20"
+              containerClassName="w-full"
             />
 
             {status && (

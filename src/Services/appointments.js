@@ -42,6 +42,21 @@ async function request(path, { method = 'GET', body, headers = {}, token } = {})
     const err = new Error(data?.message || data?.error || 'Request failed');
     err.status = res.status;
     err.body = data;
+    const message = (data?.message || data?.error || '').toLowerCase();
+    const isAuthExpired =
+      res.status === 401 &&
+      (message.includes('token expired') ||
+        message.includes('invalid token') ||
+        message.includes('authentication required') ||
+        message.includes('authentication failed'));
+    if (isAuthExpired) {
+      err.code = 'AUTH_EXPIRED';
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem('token');
+        window.localStorage.removeItem('role');
+        window.localStorage.removeItem('name');
+      }
+    }
     throw err;
   }
   return data;

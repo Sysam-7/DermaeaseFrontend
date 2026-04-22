@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { login, googleLogin } from '../../services/auth.js';
+import { login, googleLogin, verifyToken } from '../../services/auth.js';
+import PasswordInput from '../../components/PasswordInput.jsx';
 import '../Login.page.css';
 
 const API = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
@@ -103,6 +104,21 @@ export default function Login() {
       }
 
       const role = res.role || localStorage.getItem('role') || 'patient';
+      if (role === 'doctor' && res.token) {
+        const verifyRes = await verifyToken(res.token);
+        const status = verifyRes?.data?.user?.doctorVerificationStatus || 'approved';
+        if (status !== 'approved') {
+          localStorage.removeItem('token');
+          localStorage.removeItem('role');
+          localStorage.removeItem('name');
+          const pendingMsg = status === 'rejected'
+            ? 'Your doctor account was rejected by admin.'
+            : 'Your doctor account is pending admin approval. Please wait for approval.';
+          window.alert(pendingMsg);
+          setError(pendingMsg);
+          return;
+        }
+      }
       navigate(role === 'doctor' ? '/doctor/dashboard' : '/patient');
 
     } catch (err) {
@@ -169,20 +185,23 @@ export default function Login() {
               onChange={e => setEmail(e.target.value)}
             />
 
-            <div className="relative">
-              <input
-                className="input-field"
-                type="password"
-                placeholder="Password"
+            <div>
+              <PasswordInput
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                placeholder="Password"
+                className="input-field pr-20"
+                containerClassName="w-full"
+                required
               />
-              <Link 
-                to="/forgot-password" 
-                className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-gray-600 hover:text-indigo-600 hover:underline"
-              >
-                Forgot password?
-              </Link>
+              <div className="mt-1 text-right">
+                <Link 
+                  to="/forgot-password" 
+                  className="text-xs text-gray-600 hover:text-indigo-600 hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
             </div>
 
             {error && <div className="form-error">{error}</div>}

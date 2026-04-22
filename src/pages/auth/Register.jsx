@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { register } from '../../services/auth.js';
+import PasswordInput from '../../components/PasswordInput.jsx';
 
 function strongPassword(p) {
   return p.length >= 8 && /[A-Z]/.test(p) && /[a-z]/.test(p) && /\d/.test(p);
@@ -10,7 +11,6 @@ export default function Register() {
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('patient');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -23,12 +23,12 @@ export default function Register() {
     if (!strongPassword(password)) { setMessage('Password: 8+ chars, upper/lower and a number'); return; }
     setLoading(true);
     try {
-      const res = await register({ name, email, password, role });
+      const res = await register({ name, email, password, role: 'patient' });
       if (res.token) {
         localStorage.setItem('token', res.token);
-        localStorage.setItem('role', res.role || role);
+        localStorage.setItem('role', res.role || 'patient');
       }
-      const finalRole = res.role || role;
+      const finalRole = res.role || 'patient';
       navigate(finalRole === 'doctor' ? '/doctor/dashboard' : '/patient');
     } catch (err) {
       setMessage(err?.message || 'Registration failed');
@@ -36,7 +36,7 @@ export default function Register() {
   }
 
   function handleGoogleRegister() {
-    const qs = new URLSearchParams({ role }).toString();
+    const qs = new URLSearchParams({ role: 'patient' }).toString();
     let googleAuthURL;
     if (typeof window !== 'undefined' && !import.meta.env.VITE_API_URL) {
       googleAuthURL = `${window.location.origin}/api/auth/google?${qs}`;
@@ -50,6 +50,7 @@ export default function Register() {
   }
 
   return (
+    <>
     <div className="relative min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-50/60 via-white/40 to-blue-100/60 overflow-hidden">
 
       {/* --- Yellow blobs on right side --- */}
@@ -80,16 +81,18 @@ export default function Register() {
             <input className="w-full px-4 py-3 rounded-xl border border-gray-200" placeholder="Full name" value={name} onChange={e=>setName(e.target.value)} required />
             <input className="w-full px-4 py-3 rounded-xl border border-gray-200" placeholder="Username (optional)" value={username} onChange={e=>setUsername(e.target.value)} />
             <input className="w-full px-4 py-3 rounded-xl border border-gray-200" placeholder="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
-            <input className="w-full px-4 py-3 rounded-xl border border-gray-200" placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} required />
+            <PasswordInput
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+              className="w-full px-4 py-3 pr-20 rounded-xl border border-gray-200"
+              containerClassName="w-full"
+            />
             <div className="text-xs text-gray-400">8+ chars, include upper & lower case & number</div>
 
-            <div className="mt-2 flex gap-3">
-              <label className={`flex-1 px-3 py-2 rounded-xl border ${role==='patient' ? 'bg-green-50 border-green-200' : 'bg-white'}`}>
-                <input type="radio" name="role" value="patient" checked={role==='patient'} onChange={()=>setRole('patient')} className="mr-2" /> Patient
-              </label>
-              <label className={`flex-1 px-3 py-2 rounded-xl border ${role==='doctor' ? 'bg-green-50 border-green-200' : 'bg-white'}`}>
-                <input type="radio" name="role" value="doctor" checked={role==='doctor'} onChange={()=>setRole('doctor')} className="mr-2" /> Doctor
-              </label>
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              Creating this form registers a patient account.
             </div>
 
             {message && <div className="text-sm text-red-600">{message}</div>}
@@ -100,6 +103,13 @@ export default function Register() {
               </button>
               <Link to="/login" className="text-sm text-gray-500 hover:underline">Already have an account?</Link>
             </div>
+            <button
+              type="button"
+              onClick={() => navigate('/register/doctor')}
+              className="w-full rounded-xl border border-indigo-200 bg-indigo-50 py-3 px-5 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
+            >
+              Register as Doctor
+            </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-gray-500">
@@ -124,5 +134,6 @@ export default function Register() {
         </div>
       </div>
     </div>
+    </>
   );
 }
