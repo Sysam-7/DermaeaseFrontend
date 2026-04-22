@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerFirstAdmin } from '../../services/admin.js';
+import PasswordInput from '../../components/PasswordInput.jsx';
 
 export default function AdminSetup() {
   const navigate = useNavigate();
@@ -46,8 +47,24 @@ export default function AdminSetup() {
         <p className="mt-1 text-sm text-[#6B6280] dark:text-slate-400">This can be done only once.</p>
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <input name="email" type="email" placeholder="Admin email" value={form.email} onChange={handleChange} required className="w-full rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100" />
-          <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required className="w-full rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100" />
-          <input name="confirmPassword" type="password" placeholder="Confirm password" value={form.confirmPassword} onChange={handleChange} required className="w-full rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100" />
+          <PasswordInput
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 pr-20 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100"
+            containerClassName="w-full"
+          />
+          <PasswordInput
+            name="confirmPassword"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            placeholder="Confirm password"
+            required
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 pr-20 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-100"
+            containerClassName="w-full"
+          />
           {error && <p className="text-sm text-red-600">{error}</p>}
           {success && <p className="text-sm text-green-600">{success}</p>}
           <button type="submit" className="w-full rounded-lg bg-[#5B3FA8] px-4 py-2 font-semibold text-white hover:bg-[#4a3289] disabled:opacity-60" disabled={loading}>

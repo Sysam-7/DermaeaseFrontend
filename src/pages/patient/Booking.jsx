@@ -161,6 +161,12 @@ export default function Booking() {
       }
     } catch (err) {
       let errorMessage = 'Failed to book appointment. Please try again.';
+
+      if (err.code === 'AUTH_EXPIRED') {
+        showModal('warning', 'Session Expired', 'Your session has expired. Please log in again to continue booking.');
+        setTimeout(() => navigate('/login'), 1500);
+        return;
+      }
       
       // Handle specific error messages
       if (err.message) {

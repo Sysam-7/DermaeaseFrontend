@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchAdminUsers, deleteUserByAdmin, unrestrictUserByAdmin } from '../../services/admin.js';
+import {
+  fetchAdminUsers,
+  deleteUserByAdmin,
+  unrestrictUserByAdmin,
+} from '../../services/admin.js';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -187,6 +191,13 @@ export default function AdminDashboard() {
             <p className="mt-1 text-sm text-[#6B6280] dark:text-slate-400">
               Review user profiles and remove accounts with proper reason tracking.
             </p>
+            <button
+              type="button"
+              onClick={() => navigate('/admin/doctor-applications')}
+              className="mt-4 rounded-xl bg-[#5B3FA8] px-4 py-2 text-sm font-semibold text-white hover:bg-[#4a3289]"
+            >
+              Review Doctor Registrations
+            </button>
           </header>
 
           <div className="mb-6 grid gap-4 sm:grid-cols-3">

@@ -111,3 +111,11 @@ export async function resendGoogleOTP(payload) {
     body: JSON.stringify(payload),
   }).then(handleResponse);
 }
+
+export async function applyDoctorApplication(formData) {
+  return fetch(`${API}/doctor-applications/apply`, {
+    method: 'POST',
+    credentials: 'include',
+    body: formData,
+  }).then(handleResponse);
+}

@@ -1,9 +1,9 @@
 const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
 const API = baseURL.endsWith('/api') ? baseURL : `${baseURL}/api`;
 
-async function request(path, { method = 'GET', body, headers = {}, token, withAuth } = {}) {
+async function request(path, { method = 'GET', body, headers = {}, token, withAuth, rawBody } = {}) {
   const finalHeaders = { ...headers };
-  if (body && !finalHeaders['Content-Type']) {
+  if (body && !rawBody && !finalHeaders['Content-Type']) {
     finalHeaders['Content-Type'] = 'application/json';
   }
   if (withAuth && token) {
@@ -14,7 +14,7 @@ async function request(path, { method = 'GET', body, headers = {}, token, withAu
     method,
     headers: finalHeaders,
     credentials: 'include',
-    body: body ? JSON.stringify(body) : undefined,
+    body: rawBody ? body : (body ? JSON.stringify(body) : undefined),
   });
 
   const text = await res.text();
@@ -40,5 +40,16 @@ export const unrestrictUserByAdmin = (userId, token) =>
   request(`/admin/users/${userId}/unrestrict`, { method: 'PATCH', token, withAuth: true });
 export const deleteUserByAdmin = (userId, reason, token) =>
   request(`/admin/users/${userId}/delete`, { method: 'PATCH', body: { reason }, token, withAuth: true });
+
+export const fetchPendingDoctorApplications = (token) =>
+  request('/doctor-applications/pending', { method: 'GET', token, withAuth: true });
+
+export const reviewDoctorApplication = (applicationId, action, reviewNotes, token) =>
+  request(`/doctor-applications/${applicationId}/review`, {
+    method: 'PATCH',
+    body: { action, reviewNotes },
+    token,
+    withAuth: true,
+  });
 
 
