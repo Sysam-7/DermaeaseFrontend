@@ -73,7 +73,7 @@ export default function DoctorApplication() {
       return;
     }
     if (!files.medicalLicense || !files.degreeCertificate || !files.idDocument) {
-      setMessage('Please upload your license, degree certificate, and ID document.');
+      setMessage('Please upload your NMC registration certificate, medical degree certificate, and citizenship or national ID.');
       return;
     }
 
@@ -89,7 +89,9 @@ export default function DoctorApplication() {
       payload.append('degreeCertificate', files.degreeCertificate);
       payload.append('idDocument', files.idDocument);
       await applyDoctorApplication(payload);
-      setPopupMessage('Your doctor application was submitted successfully. Please wait for admin approval.');
+      setPopupMessage(
+        'Your application was submitted. An administrator will verify your documents against Nepal Medical Council (NMC) and identity standards before your doctor account is activated.'
+      );
     } catch (err) {
       setMessage(err?.message || 'Could not submit application');
     } finally {
@@ -107,12 +109,12 @@ export default function DoctorApplication() {
             <section className="rounded-l-3xl bg-gradient-to-br from-indigo-600 to-violet-700 p-8 text-white">
               <h1 className="text-3xl font-extrabold leading-tight">Apply as a Verified Doctor</h1>
               <p className="mt-4 text-indigo-100">
-                Submit your professional details and required documents. Our admin team reviews each application before doctor features are enabled.
+                Registration follows a healthcare compliance-style process aligned with Nepal Medical Council (NMC) expectations for telemedicine and professional practice. Submit legally relevant verification documents—not informal or unrelated files.
               </p>
               <ul className="mt-8 space-y-3 text-sm text-indigo-100">
-                <li>Secure document upload</li>
-                <li>Manual verification by admin</li>
-                <li>Approval notification on your account</li>
+                <li>NMC registration certificate, MBBS/medical degree, and citizenship or national ID</li>
+                <li>Optional: specialist qualification (e.g. dermatology)—include in your degree upload if one file</li>
+                <li>Manual review before doctor portal and clinical features are enabled</li>
               </ul>
               <Link to="/register" className="mt-8 inline-block rounded-lg bg-white/20 px-4 py-2 text-sm font-semibold hover:bg-white/30">
                 Back to User Registration
@@ -120,8 +122,10 @@ export default function DoctorApplication() {
             </section>
 
             <section className="p-8 md:p-10">
-              <h2 className="text-2xl font-bold text-slate-900">Doctor Application Form</h2>
-              <p className="mt-1 text-sm text-slate-500">Fill everything accurately for faster approval.</p>
+              <h2 className="text-2xl font-bold text-slate-900">Doctor application (NMC-aligned verification)</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Use the exact names and numbers that appear on your NMC registration and identity documents. Illegible or mismatched information may delay approval.
+              </p>
 
               <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                 <input className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-indigo-500" placeholder="Full name" value={form.name} onChange={(e) => updateField('name', e.target.value)} required />
@@ -134,13 +138,37 @@ export default function DoctorApplication() {
                   className="w-full rounded-xl border border-slate-200 px-4 py-3 pr-20 outline-none focus:border-indigo-500"
                   containerClassName="w-full"
                 />
-                <input className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-indigo-500" placeholder="Medical license number" value={form.licenseNumber} onChange={(e) => updateField('licenseNumber', e.target.value)} required />
-                <input className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-indigo-500" placeholder="Specialization (e.g. Dermatology)" value={form.specialization} onChange={(e) => updateField('specialization', e.target.value)} required />
+                <input
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-indigo-500"
+                  placeholder="NMC registration number (as on NMC certificate)"
+                  value={form.licenseNumber}
+                  onChange={(e) => updateField('licenseNumber', e.target.value)}
+                  required
+                />
+                <input
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-indigo-500"
+                  placeholder="Declared specialization (e.g. Dermatology, General Practice)"
+                  value={form.specialization}
+                  onChange={(e) => updateField('specialization', e.target.value)}
+                  required
+                />
 
                 <div className="grid gap-3 md:grid-cols-3">
-                  {renderUploadCard('medicalLicense', 'Medical License', 'Upload your official medical license copy')}
-                  {renderUploadCard('degreeCertificate', 'Degree Certificate', 'Upload degree or completion certificate')}
-                  {renderUploadCard('idDocument', 'Government ID', 'Upload citizenship/passport/national ID')}
+                  {renderUploadCard(
+                    'medicalLicense',
+                    'NMC registration certificate',
+                    'Official Nepal Medical Council (NMC) registration certificate or equivalent proof of NMC listing'
+                  )}
+                  {renderUploadCard(
+                    'degreeCertificate',
+                    'MBBS / medical degree certificate',
+                    'MBBS or primary medical degree. If you have specialist certification (e.g. dermatology), include it in the same PDF or a merged document—this upload is the single degree slot.'
+                  )}
+                  {renderUploadCard(
+                    'idDocument',
+                    'Citizenship or national ID',
+                    'Citizenship certificate, national ID, or passport—must support identity cross-check with your application name'
+                  )}
                 </div>
 
                 {message && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{message}</p>}

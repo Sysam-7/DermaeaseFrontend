@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import NotificationBell from "../components/NotificationBell";
 import { getMyAppointments } from "../services/appointments.js";
+import { fetchCurrentUser } from "../services/users.js";
+import { avatarImageUrl } from "../utils/profileImageUrl.js";
 import DoctorSidebar from "../components/doctor/DoctorSidebar";
 
 function CalendarWidget() {
@@ -83,6 +85,7 @@ function CalendarWidget() {
 
 export default function DoctorDashboard() {
   const [doctorName, setDoctorName] = useState("Dr. Smith");
+  const [doctorProfilePic, setDoctorProfilePic] = useState("");
   const [appointments, setAppointments] = useState([]);
   const [loadingAppointments, setLoadingAppointments] = useState(true);
 
@@ -98,6 +101,30 @@ export default function DoctorDashboard() {
     } catch (e) {
       console.error("Failed to read doctor name from localStorage", e);
     }
+  }, []);
+
+  useEffect(() => {
+    function loadDoctorAvatar() {
+      const t = localStorage.getItem("token");
+      if (!t) return;
+      fetchCurrentUser(t)
+        .then((body) => {
+          const pic = body?.data?.profilePic;
+          setDoctorProfilePic(pic || "");
+          if (body?.data?.name) {
+            const n = body.data.name.trim();
+            const displayName = n.toLowerCase().startsWith("dr.") ? n : `Dr. ${n}`;
+            setDoctorName(displayName);
+          }
+        })
+        .catch(() => {});
+    }
+    loadDoctorAvatar();
+    function onProfileUpdated() {
+      loadDoctorAvatar();
+    }
+    window.addEventListener("dermaease-profile-updated", onProfileUpdated);
+    return () => window.removeEventListener("dermaease-profile-updated", onProfileUpdated);
   }, []);
 
   useEffect(() => {
@@ -174,7 +201,7 @@ export default function DoctorDashboard() {
 
   return (
     <div className="min-h-screen bg-[#F4F1FA] text-[#2D2640] dark:bg-slate-950 dark:text-gray-100">
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen items-start">
         <DoctorSidebar appointmentBadge={badgeText} />
 
         {/* Main + right column */}
@@ -198,7 +225,7 @@ export default function DoctorDashboard() {
                     <p className="text-xs text-[#8B7EAE] dark:text-slate-400">Dermatologist</p>
                   </div>
                   <img
-                    src="/Images/doctors/doctor1.jpg"
+                    src={avatarImageUrl(doctorProfilePic, "doctors") || "/Images/doctors/doctor1.jpg"}
                     alt=""
                     className="h-11 w-11 rounded-full object-cover ring-2 ring-[#E8E0F5] dark:ring-slate-600"
                   />
@@ -226,7 +253,7 @@ export default function DoctorDashboard() {
                 <div className="relative">
                   <div className="absolute inset-0 rounded-full bg-white/40 blur-xl" />
                   <img
-                    src="/Images/doctors/doctor1.jpg"
+                    src={avatarImageUrl(doctorProfilePic, "doctors") || "/Images/doctors/doctor1.jpg"}
                     alt=""
                     className="relative h-28 w-28 rounded-full border-4 border-white object-cover shadow-xl dark:border-slate-600 sm:h-32 sm:w-32"
                   />

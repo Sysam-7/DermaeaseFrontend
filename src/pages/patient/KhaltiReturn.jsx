@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { verifyKhaltiPayment } from '../../services/payments.js';
+import PatientPageShell from '../../components/patient/PatientPageShell';
+import PatientPageHeader from '../../components/patient/PatientPageHeader';
+import { patientCardStatic, patientBtnSecondary } from '../../components/patient/patientTheme';
 
 export default function KhaltiReturn() {
   const [searchParams] = useSearchParams();
@@ -47,20 +50,18 @@ export default function KhaltiReturn() {
   }, [pidx, navigate, urlStatus]);
 
   return (
-    <div className="max-w-lg mx-auto p-8 mt-10">
-      <h1 className="text-xl font-semibold mb-2">Khalti payment</h1>
-      {error ? (
-        <div className="p-4 rounded-lg bg-red-50 text-red-800 border border-red-200">{error}</div>
-      ) : (
-        <p className="text-gray-700">{message}</p>
-      )}
-      <button
-        type="button"
-        onClick={() => navigate('/patient/appointments')}
-        className="mt-6 text-sm text-purple-700 underline"
-      >
-        Back to appointments
-      </button>
-    </div>
+    <PatientPageShell mainClassName="max-w-lg">
+      <PatientPageHeader title="Khalti payment" subtitle="Payment verification" showBell={false} />
+      <div className={`${patientCardStatic} p-6`}>
+        {error ? (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">{error}</div>
+        ) : (
+          <p className="text-[#6B6280]">{message}</p>
+        )}
+        <button type="button" onClick={() => navigate('/patient/appointments')} className={`${patientBtnSecondary} mt-6`}>
+          Back to appointments
+        </button>
+      </div>
+    </PatientPageShell>
   );
 }

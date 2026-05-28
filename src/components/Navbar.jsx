@@ -15,8 +15,8 @@ export default function Navbar({ onLogout, isAuthenticated }) {
     : "/";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[1000] border-b border-violet-100 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3 md:py-4">
+    <header className="fixed top-0 left-0 right-0 z-[1000] h-16 border-b border-violet-100 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
+      <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-5">
         {/* Brand */}
         <Link to={brandTarget} className="flex items-center gap-2">
           <span className="text-lg md:text-xl font-extrabold tracking-tight text-violet-700 dark:text-violet-300">

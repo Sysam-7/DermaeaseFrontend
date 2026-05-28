@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { fetchMyDoctorReviews } from '../../services/users.js';
 import NotificationBell from '../../components/NotificationBell.jsx';
-import DoctorSidebar from '../../components/doctor/DoctorSidebar';
+import DoctorPageShell from '../../components/doctor/DoctorPageShell';
+import DoctorPageHeader from '../../components/doctor/DoctorPageHeader';
+import { doctorCard, doctorCardStatic, doctorBtnPrimary, doctorBtnSecondary, doctorInput, doctorLabel } from '../../components/doctor/doctorTheme';
 
 export default function DoctorFeedback() {
   const [reviews, setReviews] = useState([]);
@@ -47,41 +49,11 @@ export default function DoctorFeedback() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
-      <DoctorSidebar />
-
-      {/* Main Content */}
-      <main className="flex-1 p-12">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-12">
-          <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-2">
-              Ratings & Feedback
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">
-              View patient reviews and ratings
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <NotificationBell />
-            <div className="text-right">
-              <p className="font-semibold text-gray-900 dark:text-gray-100">
-                {localStorage.getItem('name') || 'Dr. Smith'}
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Dermatologist</p>
-            </div>
-
-            <img
-              src="/Images/doctors/doctor1.jpg"
-              alt="profile"
-              className="w-14 h-14 rounded-full object-cover border-2 border-gray-200 shadow-sm"
-            />
-          </div>
-        </div>
+    <DoctorPageShell>
+      <DoctorPageHeader title="Ratings & Feedback" subtitle="View patient reviews and ratings" />
 
         {/* Summary Card */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-6 mb-8">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-[0_4px_24px_rgba(91,63,168,0.08)] ring-1 ring-[#E8E0F5] p-6 mb-8">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
@@ -108,7 +80,7 @@ export default function DoctorFeedback() {
             <p className="text-gray-600 dark:text-gray-300">Loading reviews...</p>
           </div>
         ) : reviews.length === 0 ? (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-12 text-center">
+          <div className="rounded-2xl bg-white p-8 text-center shadow-[0_4px_24px_rgba(91,63,168,0.08)] ring-1 ring-[#E8E0F5] dark:bg-slate-900 sm:p-10">
             <p className="text-gray-600 dark:text-gray-300 text-lg">No reviews yet.</p>
             <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
               Reviews from patients will appear here once they leave feedback.
@@ -119,7 +91,7 @@ export default function DoctorFeedback() {
             {reviews.map((review) => (
               <div
                 key={review._id}
-                className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-6 hover:shadow-xl transition"
+                className="bg-white dark:bg-slate-900 rounded-2xl shadow-[0_4px_24px_rgba(91,63,168,0.08)] ring-1 ring-[#E8E0F5] p-6 hover:shadow-xl transition"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
@@ -159,8 +131,7 @@ export default function DoctorFeedback() {
             ))}
           </div>
         )}
-      </main>
-    </div>
+    </DoctorPageShell>
   );
 }
 

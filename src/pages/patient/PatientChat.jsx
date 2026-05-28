@@ -1,7 +1,11 @@
+import PatientPageShell from '../../components/patient/PatientPageShell';
+import PatientPageHeader from '../../components/patient/PatientPageHeader';
+import { patientCardStatic, patientBtnPrimary, patientBtnSecondary, patientInput } from '../../components/patient/patientTheme';
 import { useEffect, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { getPatientConversations, fetchChatHistory, sendChatMessage, fetchCurrentUser } from '../../services/users.js';
 import { getDoctors } from '../../services/Aboutdoctors.js';
+import { avatarImageUrl } from '../../utils/profileImageUrl.js';
 import { Link } from 'react-router-dom';
 
 export default function PatientChat() {
@@ -161,27 +165,15 @@ export default function PatientChat() {
   }, [token]);
 
   return (
-    <div className="chat-shell text-slate-900 dark:text-slate-100">
-      <div className="mx-auto max-w-7xl px-4 py-10 lg:py-12 space-y-6">
-        <header className="chat-hero flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between shadow-sm">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">Patient workspace</p>
-            <h1 className="mt-1 text-3xl font-bold leading-tight text-slate-900">Chat with your doctors</h1>
-            <p className="mt-1 text-sm text-slate-600">Connect with your healthcare providers instantly.</p>
-          </div>
-          <Link
-            to="/patient/find-doctors"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-md transition hover:border-indigo-400 hover:text-indigo-600 hover:shadow-lg"
-          >
-            ← Find doctors
-          </Link>
-        </header>
+    <PatientPageShell mainClassName="p-0">
+      <div className="doctor-chat-shell -mx-2 sm:mx-0">
+        <PatientPageHeader title="Chat with your doctors" subtitle="Connect with your healthcare providers instantly." showBell={false} />
 
         <div className="grid gap-6 lg:grid-cols-4">
           {/* Conversations List */}
           <div className="lg:col-span-1">
-            <div className="chat-surface shadow-xl overflow-hidden">
-              <div className="border-b border-slate-100 px-4 py-4 bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400">
+            <div className="doctor-chat-surface shadow-xl overflow-hidden">
+              <div className="border-b border-slate-100 px-4 py-4 doctor-chat-header">
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm font-semibold text-white">Your doctors</h2>
                   <span className="chat-header-pill">{conversations.length} total</span>
@@ -198,14 +190,14 @@ export default function PatientChat() {
                       key={conv.userId}
                       onClick={() => setSelectedDoctor(conv)}
                       className={`w-full text-left px-4 py-3 border-b border-slate-100 transition-all hover:bg-slate-50 ${
-                        selectedDoctor?.userId === conv.userId ? 'bg-indigo-50/70 border-indigo-200 shadow-inner' : ''
+                        selectedDoctor?.userId === conv.userId ? 'bg-[#F3EEF9]/70 border-indigo-200 shadow-inner' : ''
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div className="relative shrink-0">
-                          <div className="w-12 h-12 rounded-full bg-indigo-50 ring-2 ring-indigo-100 flex items-center justify-center text-indigo-600 font-semibold shadow-sm">
-                            {conv.profilePic ? (
-                              <img src={`/Images/doctors/${conv.profilePic}`} alt={conv.name} className="w-12 h-12 rounded-full object-cover" />
+                          <div className="w-12 h-12 rounded-full bg-[#F3EEF9] ring-2 ring-indigo-100 flex items-center justify-center text-[#5B3FA8] font-semibold shadow-sm">
+                            {avatarImageUrl(conv.profilePic, 'doctors') ? (
+                              <img src={avatarImageUrl(conv.profilePic, 'doctors')} alt={conv.name} className="w-12 h-12 rounded-full object-cover" />
                             ) : (
                               conv.name.charAt(0).toUpperCase()
                             )}
@@ -213,7 +205,7 @@ export default function PatientChat() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-slate-900 truncate">{conv.name}</div>
-                          <div className="text-xs text-indigo-600 truncate">{conv.specialty}</div>
+                          <div className="text-xs text-[#5B3FA8] truncate">{conv.specialty}</div>
                           {conv.lastMessage && (
                             <div className="text-xs text-slate-500 mt-1 truncate">
                               {conv.lastMessage.message}
@@ -236,12 +228,12 @@ export default function PatientChat() {
           {/* Chat Area */}
           <div className="lg:col-span-3">
             {selectedDoctor ? (
-              <div className="chat-surface shadow-2xl overflow-hidden flex flex-col h-[calc(100vh-220px)]">
-                <div className="border-b border-slate-100 px-6 py-4 bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400">
+              <div className="doctor-chat-surface shadow-2xl overflow-hidden flex flex-col h-[calc(100vh-220px)]">
+                <div className="border-b border-slate-100 px-6 py-4 doctor-chat-header">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold ring-2 ring-white/40 shadow">
-                      {selectedDoctor.profilePic ? (
-                        <img src={`/Images/doctors/${selectedDoctor.profilePic}`} alt={selectedDoctor.name} className="w-12 h-12 rounded-full object-cover" />
+                      {avatarImageUrl(selectedDoctor.profilePic, 'doctors') ? (
+                        <img src={avatarImageUrl(selectedDoctor.profilePic, 'doctors')} alt={selectedDoctor.name} className="w-12 h-12 rounded-full object-cover" />
                       ) : (
                         selectedDoctor.name.charAt(0).toUpperCase()
                       )}
@@ -266,7 +258,7 @@ export default function PatientChat() {
                       return (
                         <div key={idx} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
                           <div
-                            className={`chat-bubble ${isOwn ? 'chat-bubble-own' : 'chat-bubble-other'} max-w-[72%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap break-words`}
+                            className={`chat-bubble ${isOwn ? 'doctor-chat-bubble-own chat-bubble' : 'doctor-chat-bubble-other chat-bubble'} max-w-[72%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap break-words`}
                           >
                             <div className="mb-1">{msg.message}</div>
                             <span className="chat-meta">
@@ -294,7 +286,7 @@ export default function PatientChat() {
                     <button
                       onClick={handleSend}
                       disabled={sending || !messageText.trim()}
-                      className="rounded-xl bg-gradient-to-r from-indigo-600 to-sky-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                      className="rounded-xl bg-gradient-to-r [#5B3FA8] px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                     >
                       {sending ? 'Sending...' : 'Send'}
                     </button>
@@ -302,7 +294,7 @@ export default function PatientChat() {
                 </div>
               </div>
             ) : (
-              <div className="chat-surface shadow-xl p-12 text-center">
+              <div className="doctor-chat-surface shadow-xl p-12 text-center">
                 <div className="text-6xl mb-4">💬</div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-2">Select a doctor to start chatting</h3>
                 <p className="text-sm text-slate-600">Choose a doctor from the list to begin your conversation.</p>
@@ -311,6 +303,6 @@ export default function PatientChat() {
           </div>
         </div>
       </div>
-    </div>
+    </PatientPageShell>
   );
 }

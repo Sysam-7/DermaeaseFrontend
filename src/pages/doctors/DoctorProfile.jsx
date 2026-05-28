@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getDoctorById } from '../../services/aboutDoctors.js';
 import { fetchReviews } from '../../services/users.js';
+import { avatarImageUrl } from '../../utils/profileImageUrl.js';
 
 export default function DoctorProfile() {
   const { id } = useParams();
@@ -146,11 +147,7 @@ export default function DoctorProfile() {
               {/* Profile Image */}
               <div className="relative shrink-0">
                 <img
-                  src={
-                    doctor.profilePic
-                      ? `/Images/doctors/${doctor.profilePic}`
-                      : fallbackImage
-                  }
+                  src={avatarImageUrl(doctor.profilePic, 'doctors') || fallbackImage}
                   alt={doctor.name}
                   className="w-32 h-32 rounded-2xl object-cover shadow-lg ring-4 ring-indigo-50"
                 />

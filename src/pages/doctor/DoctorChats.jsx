@@ -3,7 +3,9 @@ import { io } from 'socket.io-client';
 import { getDoctorConversations, fetchChatHistory, sendChatMessage, fetchCurrentUser, fetchPrescriptions, sendPrescriptionToPatient } from '../../services/users.js';
 import { Link } from 'react-router-dom';
 import Toast from '../../components/Toast';
-import DoctorSidebar from '../../components/doctor/DoctorSidebar';
+import DoctorPageShell from '../../components/doctor/DoctorPageShell';
+import DoctorPageHeader from '../../components/doctor/DoctorPageHeader';
+import { avatarImageUrl } from '../../utils/profileImageUrl.js';
 
 export default function DoctorChats() {
   const [conversations, setConversations] = useState([]);
@@ -226,23 +228,19 @@ export default function DoctorChats() {
   }, [token]);
 
   return (
-    <div className="min-h-screen bg-[#F4F1FA] text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex">
-      <DoctorSidebar />
-      <div className="chat-shell flex-1 text-slate-900 dark:text-slate-100">
-        <div className="mx-auto max-w-7xl px-4 py-10 lg:py-12 space-y-6">
-        <header className="chat-hero flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between shadow-sm">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">Doctor workspace</p>
-            <h1 className="mt-1 text-3xl font-bold leading-tight text-slate-900 dark:text-slate-100">Patient messages</h1>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Reply to patient inquiries and provide support.</p>
-          </div>
-        </header>
+    <DoctorPageShell mainClassName="p-0">
+      <div className="doctor-chat-shell flex-1 -mx-2 sm:mx-0 text-slate-900 dark:text-slate-100">
+        <DoctorPageHeader
+          title="Patient messages"
+          subtitle="Reply to patient inquiries and provide support."
+          showBell={false}
+        />
 
         <div className="grid gap-6 lg:grid-cols-4">
           {/* Conversations List */}
           <div className="lg:col-span-1">
-            <div className="chat-surface shadow-xl overflow-hidden">
-              <div className="border-b border-slate-100 px-4 py-4 bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400">
+            <div className="doctor-chat-surface shadow-xl overflow-hidden">
+              <div className="border-b border-slate-100 px-4 py-4 doctor-chat-header">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-sm font-semibold text-white">Your patients</h2>
@@ -268,8 +266,8 @@ export default function DoctorChats() {
                       <div className="flex items-start gap-3">
                         <div className="relative shrink-0">
                           <div className="w-12 h-12 rounded-full bg-emerald-50 ring-2 ring-emerald-100 flex items-center justify-center text-emerald-600 font-semibold shadow-sm">
-                            {conv.profilePic ? (
-                              <img src={`/Images/patients/${conv.profilePic}`} alt={conv.name} className="w-12 h-12 rounded-full object-cover" />
+                            {avatarImageUrl(conv.profilePic, 'patients') ? (
+                              <img src={avatarImageUrl(conv.profilePic, 'patients')} alt={conv.name} className="w-12 h-12 rounded-full object-cover" />
                             ) : (
                               conv.name.charAt(0).toUpperCase()
                             )}
@@ -300,12 +298,12 @@ export default function DoctorChats() {
           {/* Chat Area */}
           <div className="lg:col-span-3">
             {selectedPatient ? (
-              <div className="chat-surface shadow-2xl overflow-hidden flex flex-col h-[calc(100vh-220px)]">
-                <div className="border-b border-slate-100 px-6 py-4 bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400">
+              <div className="doctor-chat-surface shadow-2xl overflow-hidden flex flex-col h-[calc(100vh-220px)]">
+                <div className="border-b border-slate-100 px-6 py-4 doctor-chat-header">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold ring-2 ring-white/40 shadow">
-                      {selectedPatient.profilePic ? (
-                        <img src={`/Images/patients/${selectedPatient.profilePic}`} alt={selectedPatient.name} className="w-12 h-12 rounded-full object-cover" />
+                      {avatarImageUrl(selectedPatient.profilePic, 'patients') ? (
+                        <img src={avatarImageUrl(selectedPatient.profilePic, 'patients')} alt={selectedPatient.name} className="w-12 h-12 rounded-full object-cover" />
                       ) : (
                         selectedPatient.name.charAt(0).toUpperCase()
                       )}
@@ -330,7 +328,7 @@ export default function DoctorChats() {
                       return (
                         <div key={idx} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
                           <div
-                            className={`chat-bubble ${isOwn ? 'chat-bubble-own' : 'chat-bubble-other'} max-w-[72%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap break-words`}
+                            className={`chat-bubble ${isOwn ? 'doctor-chat-bubble-own chat-bubble' : 'doctor-chat-bubble-other chat-bubble'} max-w-[72%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap break-words`}
                           >
                             <div className="mb-1">{msg.message}</div>
                             <span className="chat-meta">
@@ -375,7 +373,7 @@ export default function DoctorChats() {
                     <button
                       onClick={handleSend}
                       disabled={sending || !messageText.trim()}
-                      className="rounded-xl bg-gradient-to-r from-indigo-600 to-sky-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                      className="rounded-xl bg-[#5B3FA8] px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                     >
                       {sending ? 'Sending...' : 'Send'}
                     </button>
@@ -383,14 +381,13 @@ export default function DoctorChats() {
                 </div>
               </div>
             ) : (
-              <div className="chat-surface shadow-xl p-12 text-center">
+              <div className="doctor-chat-surface shadow-xl p-12 text-center">
                 <div className="text-6xl mb-4">💬</div>
                 <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">Select a patient to view messages</h3>
                 <p className="text-sm text-slate-600 dark:text-slate-300">Choose a patient from the list to see their messages and reply.</p>
               </div>
             )}
           </div>
-        </div>
         </div>
 
         {/* Prescription Modal */}
@@ -489,6 +486,6 @@ export default function DoctorChats() {
           />
         )}
       </div>
-    </div>
+    </DoctorPageShell>
   );
 }

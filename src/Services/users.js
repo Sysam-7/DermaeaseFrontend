@@ -57,6 +57,12 @@ export const fetchCurrentUser = (token) =>
 export const updateCurrentUser = (payload, token) =>
   request('/users/me', { method: 'PATCH', body: payload, token });
 
+export const uploadProfileImage = (file, token) => {
+  const fd = new FormData();
+  fd.append('profileImage', file);
+  return request('/users/me/profile-image', { method: 'POST', body: fd, token });
+};
+
 export const fetchNotifications = (token) =>
   request('/notifications', { method: 'GET', token });
 

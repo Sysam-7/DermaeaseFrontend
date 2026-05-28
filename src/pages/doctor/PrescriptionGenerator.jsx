@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom';
 import { getAllPatients, createPrescription, fetchCurrentUser, sendPrescriptionToPatient } from '../../services/users.js';
 import NotificationBell from '../../components/NotificationBell';
 import Toast from '../../components/Toast';
-import DoctorSidebar from '../../components/doctor/DoctorSidebar';
+import DoctorPageShell from '../../components/doctor/DoctorPageShell';
+import DoctorPageHeader from '../../components/doctor/DoctorPageHeader';
+import { doctorCard, doctorCardStatic, doctorBtnPrimary, doctorBtnSecondary, doctorInput, doctorLabel } from '../../components/doctor/doctorTheme';
+import { avatarImageUrl } from '../../utils/profileImageUrl.js';
 
 export default function PrescriptionGenerator() {
   const [patients, setPatients] = useState([]);
@@ -162,33 +165,10 @@ export default function PrescriptionGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
-      <DoctorSidebar />
+    <DoctorPageShell>
+      <DoctorPageHeader title="Prescription Generator" subtitle="Create and manage prescriptions for your patients" />
 
-      {/* Main Content */}
-      <main className="flex-1 p-12">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-2">
-              Prescription Generator
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">
-              Create and manage prescriptions for your patients
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <NotificationBell />
-            <div className="text-right">
-              <p className="font-semibold text-gray-900">{doctorName || 'Dr. Smith'}</p>
-              <p className="text-sm text-gray-500">Dermatologist</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Prescription Form */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8">
+        <div className="rounded-2xl bg-white p-8 shadow-[0_4px_24px_rgba(91,63,168,0.08)] ring-1 ring-[#E8E0F5] dark:bg-slate-900 dark:ring-slate-700">
           <div className="space-y-6">
             {/* Patient Selection */}
             <div className="relative" ref={patientSearchRef}>
@@ -209,12 +189,12 @@ export default function PrescriptionGenerator() {
                     if (patientSearch) setShowSuggestions(true);
                   }}
                   placeholder="Type patient name to search..."
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-[#5B3FA8] focus:border-[#5B3FA8] outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                   disabled={loading}
                 />
                 {selectedPatientId && (
                   <div className="mt-2 flex items-center gap-2">
-                    <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg text-sm font-medium">
+                    <span className="px-3 py-1 bg-[#F3EEF9] text-[#5B3FA8] rounded-lg text-sm font-medium">
                       Selected: {selectedPatientName}
                     </span>
                     <button
@@ -261,13 +241,13 @@ export default function PrescriptionGenerator() {
                           setPatientSearch(patient.name);
                           setShowSuggestions(false);
                         }}
-                        className="w-full text-left px-4 py-3 hover:bg-yellow-50 transition flex items-center gap-3 border-b border-gray-100 last:border-b-0"
+                        className="w-full text-left px-4 py-3 hover:bg-[#F3EEF9] transition flex items-center gap-3 border-b border-gray-100 last:border-b-0"
                       >
                         <div className="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold">
-                          {patient.profilePic ? (
-                            <img 
-                              src={`/Images/patients/${patient.profilePic}`} 
-                              alt={patient.name} 
+                          {avatarImageUrl(patient.profilePic, 'patients') ? (
+                            <img
+                              src={avatarImageUrl(patient.profilePic, 'patients')}
+                              alt={patient.name}
                               className="w-10 h-10 rounded-full object-cover"
                             />
                           ) : (
@@ -304,7 +284,7 @@ export default function PrescriptionGenerator() {
                 onChange={(e) => setDisease(e.target.value)}
                 list="diseases"
                 placeholder="Enter skin disease or condition"
-                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-[#5B3FA8] focus:border-[#5B3FA8] outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
               />
               <datalist id="diseases">
                 {commonSkinDiseases.map((d) => (
@@ -352,7 +332,7 @@ export default function PrescriptionGenerator() {
                           value={med.name}
                           onChange={(e) => updateMedicine(index, 'name', e.target.value)}
                           placeholder="e.g., Clindamycin Gel"
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-[#5B3FA8] focus:border-[#5B3FA8] outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         />
                       </div>
 
@@ -363,7 +343,7 @@ export default function PrescriptionGenerator() {
                           value={med.dosage}
                           onChange={(e) => updateMedicine(index, 'dosage', e.target.value)}
                           placeholder="e.g., 1%"
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-[#5B3FA8] focus:border-[#5B3FA8] outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         />
                       </div>
 
@@ -374,7 +354,7 @@ export default function PrescriptionGenerator() {
                           value={med.frequency}
                           onChange={(e) => updateMedicine(index, 'frequency', e.target.value)}
                           placeholder="e.g., Twice daily"
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-[#5B3FA8] focus:border-[#5B3FA8] outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         />
                       </div>
 
@@ -385,7 +365,7 @@ export default function PrescriptionGenerator() {
                           value={med.duration}
                           onChange={(e) => updateMedicine(index, 'duration', e.target.value)}
                           placeholder="e.g., 2 weeks"
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-[#5B3FA8] focus:border-[#5B3FA8] outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         />
                       </div>
 
@@ -396,7 +376,7 @@ export default function PrescriptionGenerator() {
                           onChange={(e) => updateMedicine(index, 'notes', e.target.value)}
                           placeholder="Additional instructions for this medicine"
                           rows="2"
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-[#5B3FA8] focus:border-[#5B3FA8] outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
                         />
                       </div>
                     </div>
@@ -415,7 +395,7 @@ export default function PrescriptionGenerator() {
                 onChange={(e) => setAdditionalNotes(e.target.value)}
                 placeholder="General instructions, follow-up date, precautions, etc."
                 rows="4"
-                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-[#5B3FA8] focus:border-[#5B3FA8] outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
               />
             </div>
 
@@ -424,13 +404,13 @@ export default function PrescriptionGenerator() {
               <button
                 onClick={handleCreateAndSendPrescription}
                 disabled={saving || loading || !selectedPatientId}
-                className="px-6 py-3 bg-yellow-500 text-white rounded-xl font-semibold hover:bg-yellow-600 transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-3 bg-[#5B3FA8] text-white rounded-xl font-semibold hover:bg-[#4A3289] transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? 'Creating & Sending...' : 'Create & Send Prescription'}
               </button>
               <Link
                 to="/doctor/chats"
-                className="px-6 py-3 bg-indigo-500 text-white rounded-xl font-semibold hover:bg-indigo-600 transition shadow-lg hover:shadow-xl"
+                className={`px-6 py-3 ${doctorBtnSecondary}`}
               >
                 Go to Chats
               </Link>
@@ -444,9 +424,7 @@ export default function PrescriptionGenerator() {
             </div>
           </div>
         </div>
-      </main>
 
-      {/* Toast Notification */}
       {toast && (
         <Toast
           message={toast.message}
@@ -455,7 +433,7 @@ export default function PrescriptionGenerator() {
           duration={5000}
         />
       )}
-    </div>
+    </DoctorPageShell>
   );
 }
 

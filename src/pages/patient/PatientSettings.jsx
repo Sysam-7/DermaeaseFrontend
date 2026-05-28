@@ -1,3 +1,6 @@
+import PatientPageShell from '../../components/patient/PatientPageShell';
+import PatientPageHeader from '../../components/patient/PatientPageHeader';
+import { patientCardStatic, patientBtnPrimary, patientBtnSecondary, patientInput } from '../../components/patient/patientTheme';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -24,19 +27,8 @@ export default function PatientSettings() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F1FA] text-[#2D2640] dark:bg-slate-900 dark:text-gray-100">
-      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
-        <Link
-          to="/patient"
-          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-[#5B3FA8] hover:underline dark:text-indigo-300"
-        >
-          ← Back to dashboard
-        </Link>
-
-        <h1 className="text-3xl font-bold tracking-tight text-[#2D2640] dark:text-gray-100">Settings</h1>
-        <p className="mt-2 text-[15px] text-[#6B6280] dark:text-gray-300">
-          Appearance and preferences for your patient account.
-        </p>
+    <PatientPageShell mainClassName="max-w-2xl mx-auto w-full">
+      <PatientPageHeader title="Settings" subtitle="Appearance and preferences for your patient account." />
 
         <section className="mt-10 rounded-2xl bg-white p-6 shadow-[0_4px_24px_rgba(91,63,168,0.08)] ring-1 ring-[#E8E0F5] dark:bg-slate-900 dark:ring-slate-700">
           <h2 className="text-lg font-semibold text-[#2D2640] dark:text-gray-100">Appearance</h2>
@@ -90,7 +82,6 @@ export default function PatientSettings() {
             </a>
           </div>
         </section>
-      </div>
-    </div>
+    </PatientPageShell>
   );
 }

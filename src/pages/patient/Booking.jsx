@@ -3,6 +3,9 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { getDoctors } from '../../services/Aboutdoctors.js';
 import { bookAppointment, getAvailableSlots } from '../../services/appointments.js';
 import Modal from '../../components/Modal.jsx';
+import PatientPageShell from '../../components/patient/PatientPageShell';
+import PatientPageHeader from '../../components/patient/PatientPageHeader';
+import { patientBtnSecondary } from '../../components/patient/patientTheme';
 
 export default function Booking() {
   const [params] = useSearchParams();
@@ -197,21 +200,17 @@ export default function Booking() {
         title={modal.title}
         message={modal.message}
       />
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 text-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-gray-100">
-      <div className="mx-auto max-w-6xl space-y-8 px-4 py-10">
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500 dark:text-indigo-400">Booking flow</p>
-            <h1 className="mt-1 text-3xl font-bold leading-tight text-slate-900 dark:text-gray-100">Book your consultation</h1>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Choose your doctor, pick an available date and time, and confirm instantly.</p>
-          </div>
-          <a
-            href="/patient/find-doctors"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-indigo-400 hover:text-indigo-600 hover:shadow-md dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-indigo-500 dark:hover:text-indigo-300"
-          >
-            ← Browse doctors
-          </a>
-        </header>
+      <PatientPageShell mainClassName="max-w-6xl">
+        <PatientPageHeader
+          title="Book your consultation"
+          subtitle="Choose your doctor, pick an available date and time, and confirm instantly."
+          showBell={false}
+          actions={
+            <a href="/patient/find-doctors" className={patientBtnSecondary}>
+              ← Browse doctors
+            </a>
+          }
+        />
 
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
@@ -382,8 +381,7 @@ export default function Booking() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </PatientPageShell>
     </>
   );
 }

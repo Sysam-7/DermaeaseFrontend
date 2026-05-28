@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { getMyAppointments, updateAppointmentStatus } from "../../services/appointments.js";
-import NotificationBell from "../../components/NotificationBell";
 import { isAppointmentPaid, subscribeToPaymentUpdates } from "../../services/appointmentPayments.js";
-import DoctorSidebar from "../../components/doctor/DoctorSidebar";
+import DoctorPageShell from "../../components/doctor/DoctorPageShell";
+import DoctorPageHeader from "../../components/doctor/DoctorPageHeader";
+import { doctorBtnPrimary, doctorCardStatic, doctorTableHead, doctorTableRow } from "../../components/doctor/doctorTheme";
 
 function isPaidForAppointment(a) {
   if (!a) return false;
@@ -140,30 +141,16 @@ export default function ManageAppointments() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
-      <DoctorSidebar />
-
-      {/* Main content */}
-      <main className="flex-1 p-12">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-2">
-              Manage Appointments
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">
-              View and manage all consultations booked by your patients.
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <NotificationBell />
-            <button
-              onClick={loadAppointments}
-              className="px-5 py-2.5 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
-            >
+    <DoctorPageShell>
+        <DoctorPageHeader
+          title="Manage Appointments"
+          subtitle="View and manage all consultations booked by your patients."
+          actions={
+            <button type="button" onClick={loadAppointments} className={doctorBtnPrimary}>
               Refresh
             </button>
-          </div>
-        </div>
+          }
+        />
 
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg border border-red-200 dark:bg-red-900/40 dark:text-red-200 dark:border-red-800">
@@ -183,9 +170,9 @@ export default function ManageAppointments() {
           </div>
         ) : (
           <>
-            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow overflow-hidden">
-            <table className="w-full text-left">
-              <thead className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wide">
+            <div className={`overflow-hidden ${doctorCardStatic}`}>
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead className={doctorTableHead}>
                 <tr>
                   <th className="p-4">Patient</th>
                   <th className="p-4">Date &amp; Time</th>
@@ -194,17 +181,14 @@ export default function ManageAppointments() {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="text-gray-900 dark:text-gray-100">
+              <tbody>
                 {paginatedAppointments.map((app) => {
                   const patientName =
                     app.patientId?.name || app.patientUsername || "Unknown Patient";
                   const patientEmail = app.patientId?.email || "";
 
                   return (
-                    <tr
-                      key={app._id}
-                      className="border-t border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 transition"
-                    >
+                    <tr key={app._id} className={doctorTableRow}>
                       <td className="p-4">
                         <div className="flex flex-col">
                           <span className="font-semibold text-gray-900 dark:text-gray-100">
@@ -287,8 +271,8 @@ export default function ManageAppointments() {
               </tbody>
             </table>
             </div>
-          <div className="flex items-center justify-between border-t border-gray-200 dark:border-slate-700 px-4 py-3">
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+          <div className="mt-4 flex items-center justify-between rounded-2xl border border-[#E8E0F5] bg-white px-5 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <p className="text-sm text-[#6B6280] dark:text-slate-400">
               {`Showing ${sortedAppointments.length === 0 ? 0 : startIndex + 1}-${Math.min(
                 startIndex + APPOINTMENTS_PER_PAGE,
                 sortedAppointments.length
@@ -318,7 +302,6 @@ export default function ManageAppointments() {
           </div>
           </>
         )}
-      </main>
-    </div>
+    </DoctorPageShell>
   );
 }

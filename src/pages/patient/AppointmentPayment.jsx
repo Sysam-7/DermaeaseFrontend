@@ -3,6 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getMyAppointments } from '../../services/appointments.js';
 import { fetchPaymentFee, initiateKhaltiPayment } from '../../services/payments.js';
 import { fetchCurrentUser } from '../../services/users.js';
+import PatientPageShell from '../../components/patient/PatientPageShell';
+import PatientPageHeader from '../../components/patient/PatientPageHeader';
+import { patientCardStatic, patientBtnPrimary, patientInput } from '../../components/patient/patientTheme';
 
 export default function AppointmentPayment() {
   const { appointmentId } = useParams();
@@ -92,14 +95,14 @@ export default function AppointmentPayment() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-2">Appointment payment (Khalti)</h1>
-      <p className="text-gray-600 mb-6">
-        Pay the consultation fee to continue. You will be redirected to Khalti (sandbox) to complete payment.
-      </p>
+    <PatientPageShell mainClassName="max-w-3xl">
+      <PatientPageHeader
+        title="Appointment payment"
+        subtitle="Pay the consultation fee via Khalti (sandbox). You will be redirected to complete payment."
+      />
 
       {loading ? (
-        <div className="p-4 bg-white rounded border">Loading payment details...</div>
+        <div className={`${patientCardStatic} p-4`}>Loading payment details...</div>
       ) : error && !appointment ? (
         <div className="p-4 bg-red-50 text-red-700 rounded border border-red-200">{error}</div>
       ) : !appointment ? null : appointment.status !== 'confirmed' ? (
@@ -107,7 +110,7 @@ export default function AppointmentPayment() {
           Payment is available only after the doctor confirms this appointment.
         </div>
       ) : (
-        <div className="bg-white rounded-xl border shadow-sm p-6">
+        <div className={`${patientCardStatic} p-6`}>
           <div className="space-y-2 text-sm mb-4">
             <p>
               <span className="font-semibold">Doctor:</span> {doctorName}
@@ -130,20 +133,20 @@ export default function AppointmentPayment() {
               <p className="text-sm text-gray-600 mb-3">Billing details (sent to Khalti)</p>
               <div className="grid gap-3 max-w-md">
                 <input
-                  className="border rounded-lg px-3 py-2"
+                  className={patientInput}
                   placeholder="Full name"
                   value={customerInfo.name}
                   onChange={(e) => setCustomerInfo((s) => ({ ...s, name: e.target.value }))}
                 />
                 <input
-                  className="border rounded-lg px-3 py-2"
+                  className={patientInput}
                   type="email"
                   placeholder="Email"
                   value={customerInfo.email}
                   onChange={(e) => setCustomerInfo((s) => ({ ...s, email: e.target.value }))}
                 />
                 <input
-                  className="border rounded-lg px-3 py-2"
+                  className={patientInput}
                   placeholder="Phone (e.g. 9800000001 for sandbox)"
                   value={customerInfo.phone}
                   onChange={(e) => setCustomerInfo((s) => ({ ...s, phone: e.target.value }))}
@@ -153,7 +156,7 @@ export default function AppointmentPayment() {
               <button
                 onClick={handlePayWithKhalti}
                 disabled={processing}
-                className="mt-6 px-5 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-60"
+                className={`${patientBtnPrimary} mt-6`}
               >
                 {processing ? 'Starting Khalti…' : 'Pay with Khalti'}
               </button>
@@ -161,6 +164,6 @@ export default function AppointmentPayment() {
           )}
         </div>
       )}
-    </div>
+    </PatientPageShell>
   );
 }

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { fetchPrescriptions } from '../../services/users.js';
-import NotificationBell from '../../components/NotificationBell';
+import PatientPageShell from '../../components/patient/PatientPageShell';
+import PatientPageHeader from '../../components/patient/PatientPageHeader';
+import { patientCardStatic, patientBtnPrimary, patientBtnSecondary } from '../../components/patient/patientTheme';
 
 export default function ViewPrescription() {
   const { prescriptionId } = useParams();
@@ -53,32 +55,27 @@ export default function ViewPrescription() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f5f5fb] flex items-center justify-center">
+      <PatientPageShell mainClassName="flex min-h-[50vh] items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading prescription...</p>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-[#5B3FA8]" />
+          <p className="text-[#6B6280]">Loading prescription...</p>
         </div>
-      </div>
+      </PatientPageShell>
     );
   }
 
   if (error || !prescription) {
     return (
-      <div className="min-h-screen bg-[#f5f5fb] px-4 py-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-            <div className="text-6xl mb-4">❌</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Prescription Not Found</h2>
-            <p className="text-gray-600 mb-6">{error || 'The prescription you are looking for does not exist.'}</p>
-            <Link
-              to="/patient"
-              className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition"
-            >
-              Back to Dashboard
-            </Link>
-          </div>
+      <PatientPageShell mainClassName="max-w-4xl">
+        <div className={`${patientCardStatic} p-8 text-center`}>
+          <div className="mb-4 text-6xl">❌</div>
+          <h2 className="mb-2 text-2xl font-bold text-[#2D2640]">Prescription Not Found</h2>
+          <p className="mb-6 text-[#6B6280]">{error || 'The prescription you are looking for does not exist.'}</p>
+          <Link to="/patient" className={patientBtnPrimary}>
+            Back to Dashboard
+          </Link>
         </div>
-      </div>
+      </PatientPageShell>
     );
   }
 
@@ -88,36 +85,26 @@ export default function ViewPrescription() {
   const notes = prescription.content?.notes || '';
 
   return (
-    <div className="min-h-screen bg-[#f5f5fb] px-4 py-6 md:px-8">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <header className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900">Prescription</h1>
-            <p className="text-sm md:text-base text-slate-600 mt-1">View your prescription details</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <NotificationBell />
-            <Link
-              to="/patient"
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition text-sm font-medium"
-            >
-              Back to Dashboard
-            </Link>
-          </div>
-        </header>
+    <PatientPageShell mainClassName="max-w-4xl">
+      <PatientPageHeader
+        title="Prescription"
+        subtitle="View your prescription details"
+        actions={
+          <Link to="/prescriptions" className={patientBtnSecondary}>
+            All prescriptions
+          </Link>
+        }
+      />
 
-        {/* Prescription Card */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          {/* Header Section */}
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-8 text-white">
+      <div className={`${patientCardStatic} overflow-hidden`}>
+          <div className="bg-gradient-to-r from-[#5B3FA8] to-[#7B5FCF] px-6 py-8 text-white">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h2 className="text-2xl font-bold mb-1">DermaEase</h2>
-                <p className="text-indigo-100 text-sm">Digital Prescription</p>
+                <p className="text-white/80 text-sm">Digital Prescription</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-indigo-100">Date</p>
+                <p className="text-sm text-white/80">Date</p>
                 <p className="font-semibold">{formatDate(prescription.createdAt)}</p>
               </div>
             </div>
@@ -159,7 +146,7 @@ export default function ViewPrescription() {
                       className="bg-gray-50 rounded-xl p-4 border border-gray-200"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold text-sm">
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#F3EEF9] text-sm font-bold text-[#5B3FA8]">
                           {index + 1}
                         </div>
                         <div className="flex-1">
@@ -213,7 +200,7 @@ export default function ViewPrescription() {
                   href={prescription.pdfLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition shadow-lg hover:shadow-xl"
+                  className={`${patientBtnPrimary} gap-2`}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -226,14 +213,13 @@ export default function ViewPrescription() {
         </div>
 
         {/* Footer Note */}
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-          <p className="text-sm text-blue-800">
+        <div className="rounded-xl border border-[#E8E0F5] bg-[#F8F5FD] p-4">
+          <p className="text-sm text-[#5B3FA8]">
             <strong>Important:</strong> Please follow the prescription instructions carefully. 
             If you have any questions or concerns, contact your doctor through the chat feature.
           </p>
         </div>
-      </div>
-    </div>
+    </PatientPageShell>
   );
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getDoctorById } from '../../services/aboutDoctors.js';
+import { avatarImageUrl } from '../../utils/profileImageUrl.js';
 
 export default function DoctorProfile() {
   const { id } = useParams();
@@ -20,7 +21,11 @@ export default function DoctorProfile() {
   return (
     <div className="p-6 max-w-3xl bg-white rounded shadow">
       <div className="flex gap-4 items-center">
-        <img src={doctor.profilePic || '/Images/doctor-placeholder.png'} alt={doctor.name} className="w-28 h-28 rounded-lg object-cover" />
+        <img
+          src={avatarImageUrl(doctor.profilePic, 'doctors') || '/Images/doctor-placeholder.png'}
+          alt={doctor.name}
+          className="w-28 h-28 rounded-lg object-cover"
+        />
         <div>
           <h1 className="text-2xl font-semibold">{doctor.name}</h1>
           <p className="text-sm text-gray-600">{doctor.specialty}</p>

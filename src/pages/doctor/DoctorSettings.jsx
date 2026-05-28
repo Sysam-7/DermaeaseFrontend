@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import DoctorSidebar from "../../components/doctor/DoctorSidebar";
+import DoctorPageShell from '../../components/doctor/DoctorPageShell';
+import DoctorPageHeader from '../../components/doctor/DoctorPageHeader';
+import { doctorCard, doctorCardStatic, doctorBtnPrimary, doctorBtnSecondary, doctorInput, doctorLabel } from '../../components/doctor/doctorTheme';
 
 const THEME_KEY = "doctor_theme";
 
@@ -46,18 +48,9 @@ export default function DoctorSettings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 dark:from-slate-900 dark:to-slate-950 flex">
-      <DoctorSidebar />
-
-      <main className="flex-1 p-12">
-        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-4">
-          Settings
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-10">
-          Personalize your DermaEase experience and basic account preferences.
-        </p>
-
-        <section className="bg-white dark:bg-slate-900 rounded-2xl shadow p-6 mb-8">
+    <DoctorPageShell>
+      <DoctorPageHeader title="Settings" subtitle="Personalize your DermaEase experience and basic account preferences." />
+        <section className="rounded-2xl bg-white shadow-[0_4px_24px_rgba(91,63,168,0.08)] ring-1 ring-[#E8E0F5] dark:bg-slate-900 dark:ring-slate-700 p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
             Appearance
           </h2>
@@ -70,8 +63,7 @@ export default function DoctorSettings() {
               type="button"
               onClick={() => handleThemeChange("light")}
               className={`px-4 py-2 rounded-xl border text-sm font-medium ${
-                theme === "light"
-                  ? "bg-yellow-400 border-yellow-500 text-gray-900"
+                theme === "light" ? "bg-[#5B3FA8] border-[#5B3FA8] text-white shadow-md"
                   : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
               }`}
             >
@@ -91,7 +83,7 @@ export default function DoctorSettings() {
           </div>
         </section>
 
-        <section className="bg-white dark:bg-slate-900 rounded-2xl shadow p-6 mb-8">
+        <section className="rounded-2xl bg-white shadow-[0_4px_24px_rgba(91,63,168,0.08)] ring-1 ring-[#E8E0F5] dark:bg-slate-900 dark:ring-slate-700 p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
             Notifications
           </h2>
@@ -108,7 +100,7 @@ export default function DoctorSettings() {
               type="button"
               onClick={() => handleNotificationsChange(!notificationsEnabled)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                notificationsEnabled ? "bg-green-500" : "bg-gray-300"
+                notificationsEnabled ? "bg-[#5B3FA8]" : "bg-gray-300"
               }`}
             >
               <span
@@ -132,7 +124,7 @@ export default function DoctorSettings() {
               type="button"
               onClick={() => handleEmailSummariesChange(!emailSummaries)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                emailSummaries ? "bg-green-500" : "bg-gray-300"
+                emailSummaries ? "bg-[#5B3FA8]" : "bg-gray-300"
               }`}
             >
               <span
@@ -144,7 +136,7 @@ export default function DoctorSettings() {
           </div>
         </section>
 
-        <section className="bg-white dark:bg-slate-900 rounded-2xl shadow p-6">
+        <section className="rounded-2xl bg-white shadow-[0_4px_24px_rgba(91,63,168,0.08)] ring-1 ring-[#E8E0F5] dark:bg-slate-900 dark:ring-slate-700 p-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
             Account
           </h2>
@@ -165,8 +157,7 @@ export default function DoctorSettings() {
             Logout
           </a>
         </section>
-      </main>
-    </div>
+    </DoctorPageShell>
   );
 }
 

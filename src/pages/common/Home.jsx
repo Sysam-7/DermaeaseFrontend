@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import About from "./About";
 import Contact from "./Contact";
 import Help from "./Help";
-import SettingsPage from "./Settings";
 
 export default function Home() {
   return (

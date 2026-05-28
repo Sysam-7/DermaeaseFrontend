@@ -15,6 +15,10 @@ export default defineConfig(({ mode }) => {
           target: proxyTarget.replace(/\/$/, ''),
           changeOrigin: true,
         },
+        '/uploads': {
+          target: proxyTarget.replace(/\/$/, ''),
+          changeOrigin: true,
+        },
       },
     },
   };

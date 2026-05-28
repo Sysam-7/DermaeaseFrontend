@@ -1,3 +1,6 @@
+import PatientPageShell from '../components/patient/PatientPageShell';
+import PatientPageHeader from '../components/patient/PatientPageHeader';
+import { patientCardStatic, patientBtnPrimary, patientBtnSecondary, patientInput } from '../components/patient/patientTheme';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getMyAppointments } from '../services/appointments.js';
@@ -64,29 +67,13 @@ export default function Reviews() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-yellow-100 px-4 py-6 dark:from-slate-950 dark:to-slate-900 md:px-8">
-      <div className="mx-auto max-w-5xl space-y-6">
-        {/* Header */}
-        <header className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-gray-100 md:text-4xl">Reviews & Feedback</h1>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 md:text-base">
-              Share your experience with doctors you&apos;ve visited. Your feedback helps others choose the right care.
-            </p>
-          </div>
-          <Link
-            to="/patient/appointments"
-            className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-          >
-            View All Appointments
-          </Link>
-        </header>
+    <PatientPageShell mainClassName="max-w-5xl mx-auto w-full">
+      <PatientPageHeader title="Reviews & Feedback" subtitle="Share your experience with doctors you've visited." />
 
-        {/* Content */}
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4" />
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5B3FA8] mx-auto mb-4" />
               <p className="text-gray-600 dark:text-slate-400">Loading your past visits...</p>
             </div>
           </div>
@@ -140,7 +127,7 @@ export default function Reviews() {
                     <div className="mt-4 flex gap-3">
                       <button
                         onClick={() => handleOpenFeedback(a.doctorId._id, doctorName)}
-                        className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-purple-600 text-white text-sm font-semibold hover:bg-purple-700 transition shadow-sm hover:shadow-md"
+                        className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#5B3FA8] text-white text-sm font-semibold hover:bg-[#4A3289] transition shadow-sm hover:shadow-md"
                       >
                         Leave / Edit Review
                       </button>
@@ -151,7 +138,6 @@ export default function Reviews() {
             })}
           </div>
         )}
-      </div>
 
       <FeedbackModal
         isOpen={feedbackModal.isOpen}
@@ -163,6 +149,6 @@ export default function Reviews() {
           console.log('Feedback submitted');
         }}
       />
-    </div>
+    </PatientPageShell>
   );
 }

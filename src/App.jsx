@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Home from "./pages/common/Home.jsx";
@@ -78,15 +78,8 @@ function Protected({ children, roles }) {
 }
 
 export default function App() {
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    const name = localStorage.getItem("name");
-    const role = localStorage.getItem("role");
-    if (name || role) setUser({ name, role });
-  }, []);
 
   // Apply saved light/dark theme on load so every route respects `doctor_theme` without opening Settings first.
   useEffect(() => {
@@ -132,11 +125,18 @@ export default function App() {
     || location.pathname === "/register"
     || location.pathname === "/register/doctor";
   const isAuthenticated = Boolean(localStorage.getItem("token"));
-  const isDoctorDashboardRoute =
-    location.pathname === "/doctor" || location.pathname === "/doctor/" || location.pathname === "/doctor/dashboard";
-  const isPatientDashboardRoute = location.pathname === "/patient" || location.pathname === "/patient/";
-  const isLandingPageRoute = location.pathname === "/";
-  const showGlobalBackButton = !isDoctorDashboardRoute && !isPatientDashboardRoute && !isLandingPageRoute;
+  const path = location.pathname;
+  const isLandingPageRoute = path === "/";
+  /** Full portal layouts use their own nav/sidebars — global Back + extra shell padding caused a large gap under the navbar */
+  const isDoctorPortal = path.startsWith("/doctor");
+  const isPatientPortal = path.startsWith("/patient");
+  const isAdminAppShell =
+    path.startsWith("/admin/dashboard") || path.startsWith("/admin/doctor-applications");
+  const showGlobalBackButton =
+    !isLandingPageRoute &&
+    !isDoctorPortal &&
+    !isPatientPortal &&
+    !isAdminAppShell;
 
   const handleGlobalBack = () => {
     if (window.history.length > 1) {
@@ -151,9 +151,15 @@ export default function App() {
       {!hideHeader && (
         <Navbar onLogout={handleLogout} isAuthenticated={isAuthenticated} />
       )}
-      <div className={hideHeader ? "p-4" : "pt-20 p-4"}>
+      <div
+        className={
+          hideHeader
+            ? "p-4"
+            : "pt-16 px-4 pb-5 sm:px-5 sm:pb-6"
+        }
+      >
         {showGlobalBackButton && (
-          <div className="mb-4">
+          <div className="mb-2">
             <button
               type="button"
               onClick={handleGlobalBack}
@@ -246,15 +252,14 @@ export default function App() {
             }
           />
 
-<Route
-  path="/doctor/manage-appointments"
-  element={
-    <Protected roles={['doctor']}>
-      <ManageAppointments />
-    </Protected>
-  }
-/>
-
+          <Route
+            path="/doctor/manage-appointments"
+            element={
+              <Protected roles={['doctor']}>
+                <ManageAppointments />
+              </Protected>
+            }
+          />
 
           <Route
             path="/patient/settings"
@@ -265,18 +270,26 @@ export default function App() {
             }
           />
           <Route
-            path="/patient/*"
-            element={
-              <Protected roles={["patient", "admin"]}>
-                <PatientDashboard />
-              </Protected>
-            }
-          />
-          <Route
             path="/patient/find-doctors"
             element={
               <Protected roles={["patient", "admin"]}>
                 <FindingDoctors />
+              </Protected>
+            }
+          />
+          <Route
+            path="/patient/prescription/:prescriptionId"
+            element={
+              <Protected roles={["patient", "admin"]}>
+                <ViewPrescription />
+              </Protected>
+            }
+          />
+          <Route
+            path="/patient/*"
+            element={
+              <Protected roles={["patient", "admin"]}>
+                <PatientDashboard />
               </Protected>
             }
           />
@@ -335,14 +348,6 @@ export default function App() {
             element={
               <Protected roles={["doctor", "admin"]}>
                 <DoctorSettings />
-              </Protected>
-            }
-          />
-          <Route
-            path="/patient/prescription/:prescriptionId"
-            element={
-              <Protected roles={["patient", "admin"]}>
-                <ViewPrescription />
               </Protected>
             }
           />

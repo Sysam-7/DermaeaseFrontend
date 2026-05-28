@@ -5,6 +5,9 @@ import { getMyAppointments } from '../../services/appointments.js';
 import { verifyToken } from '../../services/auth.js';
 import FeedbackModal from '../../components/FeedbackModal.jsx';
 import { isAppointmentPaid, subscribeToPaymentUpdates } from '../../services/appointmentPayments.js';
+import PatientPageShell from '../../components/patient/PatientPageShell';
+import PatientPageHeader from '../../components/patient/PatientPageHeader';
+import { patientCardStatic, patientBtnPrimary } from '../../components/patient/patientTheme';
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function isPaidForAppointment(a) {
@@ -161,14 +164,14 @@ export default function MyAppointments() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white p-6 dark:from-slate-950 dark:to-slate-950 dark:text-gray-100">
-      <div className="mx-auto max-w-5xl">
-        <h1 className="mb-2 text-3xl font-bold dark:text-gray-100">My Appointments</h1>
-        <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
-          Latest appointment requests appear first. New requests stay as pending until your doctor responds.
-        </p>
+    <PatientPageShell mainClassName="max-w-5xl mx-auto w-full">
+      <PatientPageHeader
+        title="My Appointments"
+        subtitle="Latest appointment requests appear first. New requests stay as pending until your doctor responds."
+      />
+
       {sortedAppointments.length === 0 ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 text-gray-600 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
+        <div className="p-8 text-center text-[#6B6280] dark:text-slate-400 rounded-2xl bg-white shadow-[0_4px_24px_rgba(91,63,168,0.08)] ring-1 ring-[#E8E0F5] dark:bg-slate-900 dark:ring-slate-700">
           No appointments found.
         </div>
       ) : (
@@ -180,7 +183,7 @@ export default function MyAppointments() {
             const isExpanded = Boolean(expandedIds[a._id]);
             
             return (
-              <div key={a._id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-900">
+              <div key={a._id} className="overflow-hidden rounded-2xl bg-white shadow-[0_4px_24px_rgba(91,63,168,0.08)] ring-1 ring-[#E8E0F5] transition hover:shadow-[0_8px_32px_rgba(91,63,168,0.12)] dark:bg-slate-900 dark:ring-slate-700">
                 <div className="flex items-center justify-between gap-4 bg-slate-50/80 px-4 py-3 dark:bg-slate-800/50">
                   <div className="min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
@@ -219,7 +222,7 @@ export default function MyAppointments() {
                         Pay your amount to continue to appointment with {doctorName}.
                         <button
                           onClick={() => navigate(`/patient/appointment-payment/${a._id}`)}
-                          className="ml-3 rounded bg-purple-600 px-3 py-1.5 text-white hover:bg-purple-700"
+                          className={`ml-3 ${patientBtnPrimary} px-3 py-1.5`}
                         >
                           Pay Now
                         </button>
@@ -239,7 +242,7 @@ export default function MyAppointments() {
                       <div className="mt-3">
                         <button
                           onClick={() => handleOpenFeedback(a.doctorId._id, doctorName)}
-                          className="rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-purple-700"
+                          className={patientBtnPrimary}
                         >
                           Leave Feedback & Rating
                         </button>
@@ -279,7 +282,6 @@ export default function MyAppointments() {
           </div>
         </div>
       )}
-      </div>
       <FeedbackModal
         isOpen={feedbackModal.isOpen}
         onClose={handleCloseFeedback}
@@ -290,7 +292,7 @@ export default function MyAppointments() {
           console.log('Feedback submitted successfully');
         }}
       />
-    </div>
+    </PatientPageShell>
   );
 }
 

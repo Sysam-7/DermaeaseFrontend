@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { avatarImageUrl } from '../utils/profileImageUrl.js';
 
 export default function DoctorCard({ doctor }) {
   const [booked, setBooked] = useState(false);
@@ -56,11 +57,7 @@ export default function DoctorCard({ doctor }) {
       <div className="flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:gap-6 sm:px-6 sm:py-5">
         <div className="relative shrink-0">
           <img
-            src={
-              doctor.profilePic
-                ? `/Images/doctors/${doctor.profilePic}` // custom pic from database
-                : fallbackImage                           // fallback doctor1–doctor4
-            }
+            src={avatarImageUrl(doctor.profilePic, 'doctors') || fallbackImage}
             alt={doctor.name}
             className="h-20 w-20 rounded-2xl object-cover shadow-md ring-4 ring-indigo-50 transition group-hover:scale-[1.02] dark:ring-indigo-950/50"
           />
